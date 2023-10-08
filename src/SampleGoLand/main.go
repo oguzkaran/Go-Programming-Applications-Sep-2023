@@ -1,9 +1,9 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Gerçek sayı türleri için yani f format karakteri ile değerin noktadan sonraki kısmının kaç basamak olarak formatlanacağı
-	belirlenebilir. Geri kalan değerler için bilimsel yuvarlama yapılır. Bunun için f ile % arasında nokta ile birlikte
-	pozitif bir sayı yazılır. Bu sayı kaç basamağın formatlanacağını belirtir
+	Tamsayılar çeşitli sayı sistemlerinde (base/radix) formatlanabilmektedir. Örneğin hexadecimal için x veya X, octal
+	için o veya O kullanılabilir. Büyük O ile sayının başında sıfır ve o karakteri de eklenir. b format karakteri ile
+	değer binary olarak formatlanabilir
 
 ------------------------------------------------------------------------------------------------------------------------
 */
@@ -12,10 +12,15 @@ package main
 import "fmt"
 
 func main() {
-	var val float64
+	var val int
 
 	fmt.Print("Input a value:")
 	fmt.Scan(&val)
 
-	fmt.Printf("val = %.10f\n", val)
+	fmt.Printf("val = %d\n", val)
+	fmt.Printf("val = %x\n", val)
+	fmt.Printf("val = %X\n", val)
+	fmt.Printf("val = %b\n", val)
+	fmt.Printf("val = %o\n", val)
+	fmt.Printf("val = %O\n", val)
 }
