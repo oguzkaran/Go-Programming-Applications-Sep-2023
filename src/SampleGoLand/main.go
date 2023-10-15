@@ -1,24 +1,32 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Mantıksal operatörler 3 tanedir: Logical AND (&&), Logical OR(||), Logical NOT(!)
+	Sınıf Çalışması: Katsayıları klavyeden girilen ikinci dereceden bir denklemin köklerini bulan programı yazınız
 
 ------------------------------------------------------------------------------------------------------------------------
 */
+
 package main
 
 import "fmt"
 
 func main() {
-	var a, b int
+	var a int
 
-	fmt.Print("Input two numbers:")
-	fmt.Scan(&a, &b)
+	fmt.Print("Bir sayı giriniz:")
+	fmt.Scan(&a)
 
-	fmt.Println(a < b)
-	fmt.Println(a >= b)
-	fmt.Println(a > b)
-	fmt.Println(a <= b)
-	fmt.Println(a == b)
-	fmt.Println(a != b)
+	if isOdd(a) {
+		fmt.Println("Tek sayı!...")
+	} else {
+		fmt.Println("Çift sayı!...")
+	}
+}
+
+func isEven(val int) bool {
+	return val%2 == 0
+}
+
+func isOdd(val int) bool {
+	return !isEven(val)
 }
