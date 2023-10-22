@@ -1,12 +1,9 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Sınıf Çalışması: Parametresi ile aldığı int türden bir değerin asal olup olmadığını test eden isPrime isimli
-	fonksiyonu yazınız ve aşağıdaki kod ile test ediniz
+	Aşağıdaki demo menü uygulamasını inceleyiniz
 
-	Kural: Pozitif bir sayı karekökünden küçük olan asal sayıların hiç birisine bölünemiyorsa asaldır (Eratosten)
-
-	Not: Aşağıdaki isPrime fonksiyonu bir önceki algoritmaya göre oldukça hızlıdır. Ancak en hızlısı değildir
+	Not: İleride daha iyisi yazılacaktır
 
 ------------------------------------------------------------------------------------------------------------------------
 */
@@ -16,41 +13,78 @@ package main
 import "fmt"
 
 func main() {
-	runIsPrimeTest()
+	runDemoApp()
 }
 
-func runIsPrimeTest() {
-	fmt.Println(isPrime(6750161072220585911))
-
-	fmt.Println("Tekrar yapıyor musunuz?")
-}
-
-func isPrime(val int) bool {
-	if val < 1 {
-		return false
-	}
-
-	if val%2 == 0 {
-		return val == 2
-	}
-
-	if val%3 == 0 {
-		return val == 3
-	}
-
-	if val%5 == 0 {
-		return val == 5
-	}
-
-	if val%7 == 0 {
-		return val == 7
-	}
-
-	for i := 11; i*i <= val; i += 2 {
-		if val%i == 0 {
-			return false
+func runDemoApp() {
+	for {
+		printMenu()
+		option := readOption()
+		if option < 1 || option > 5 {
+			fmt.Println("Geçersiz seçenek")
+			continue
 		}
+
+		if option == 5 {
+			break
+		}
+
+		doForOption(option)
 	}
 
-	return true
+	fmt.Println("Teşekkürler!...")
+}
+
+func doForOption(option int) {
+	switch option {
+	case 1:
+		insertProc()
+	case 2:
+		searchProc()
+	case 3:
+		deleteProc()
+	default:
+		updateProc()
+	}
+}
+
+func insertProc() {
+	fmt.Println("------------------------------------------")
+	fmt.Println("Ekle")
+	fmt.Println("------------------------------------------")
+}
+
+func searchProc() {
+	fmt.Println("------------------------------------------")
+	fmt.Println("Ara")
+	fmt.Println("------------------------------------------")
+}
+
+func deleteProc() {
+	fmt.Println("------------------------------------------")
+	fmt.Println("Sil")
+	fmt.Println("------------------------------------------")
+}
+
+func updateProc() {
+	fmt.Println("------------------------------------------")
+	fmt.Println("Güncelle")
+	fmt.Println("------------------------------------------")
+}
+
+func printMenu() {
+	fmt.Println("1.Ekle")
+	fmt.Println("2.Ara")
+	fmt.Println("3.Sil")
+	fmt.Println("4.Güncelle")
+	fmt.Println("5.Çıkış")
+	fmt.Print("Seçenek:")
+}
+
+func readOption() int {
+	var option int
+
+	fmt.Scan(&option)
+
+	return option
 }
