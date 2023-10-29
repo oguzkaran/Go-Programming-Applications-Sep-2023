@@ -1,7 +1,10 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Farklı Türlerin Birbirine Atanması (Tür dönüşümleri):
+	Bir process için tipik olarak iki tane bellek alanı tahsis edilir: stack, heap. Şüphesiz sisteme yönelik başka
+	bellek alanları da söz konusudur.
+
+	Yerel değişkenler ve fonksiyon parametre değişkenleri stack'de yaratılırlar.
 
 ------------------------------------------------------------------------------------------------------------------------
 */
@@ -9,9 +12,5 @@
 package main
 
 func main() {
-	var a int32 = 10
-	var b int64
-
-	b = int64(a)
 
 }
