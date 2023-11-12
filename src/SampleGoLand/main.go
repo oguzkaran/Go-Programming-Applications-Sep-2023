@@ -1,29 +1,31 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Sınıf Çalışması: Parametresi ile aldığı bir yazının tersiniğ döndüren Reverse isimli fonksiyonu yazınız
+	strings.ToUpper ve strings.ToLower metotları
 
 ------------------------------------------------------------------------------------------------------------------------
 */
 
 package main
 
+import (
+	"fmt"
+	"strings"
+	"unicode"
+)
+
 func main() {
+	for {
+		var str string
 
-}
+		fmt.Print("Input text:")
+		fmt.Scan(&str)
 
-func PadLeadingSpace(s string, newLen int) string {
+		if str == "quit" {
+			break
+		}
 
-}
-
-func PadLeading(s string, newLen int, c rune) string {
-
-}
-
-func PadTrailingSpace(s string, newLen int) string {
-
-}
-
-func PadTrailing(s string, newLen int, c rune) string {
-
+		fmt.Println(strings.ToUpperSpecial(unicode.TurkishCase, str))
+		fmt.Println(strings.ToLowerSpecial(unicode.TurkishCase, str))
+	}
 }
