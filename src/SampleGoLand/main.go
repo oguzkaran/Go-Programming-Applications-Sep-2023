@@ -1,7 +1,9 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	strings.ToUpper ve strings.ToLower metotları
+	Sınıf Çalışması: Parametresi ile bir yazının içerisindeki içerisindeki en uzun ilk palindrome geri dönen
+	GetShortestFirsPalindrome fonksiyonunu ve son en uzun palindroma geri dönen GetShortestFirsPalindrome fonksiyonlarını
+	yazınız ve test ediniz. Yazıda palindrom yoksa boş string'e geri dönecektir
 
 ------------------------------------------------------------------------------------------------------------------------
 */
@@ -9,23 +11,26 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strings"
-	"unicode"
 )
 
 func main() {
+	kb := bufio.NewReader(os.Stdin)
+
 	for {
-		var str string
-
 		fmt.Print("Input text:")
-		fmt.Scan(&str)
+		str, _ := kb.ReadString('\n')
 
-		if str == "quit" {
-			break
+		str = strings.TrimRight(str, "\r\n")
+
+		for _, c := range str {
+			fmt.Printf("%c ", c)
 		}
 
-		fmt.Println(strings.ToUpperSpecial(unicode.TurkishCase, str))
-		fmt.Println(strings.ToLowerSpecial(unicode.TurkishCase, str))
+		fmt.Println()
+
 	}
 }
