@@ -31,18 +31,33 @@
 */
 package main
 
+import (
+	"container/list"
+	"fmt"
+	"math/rand"
+)
+
+import (
+	"SampleGoLand/csd/container"
+)
+
+func fillRandom(lst *container.CSDIntList, count int) {
+	for i := 0; i < count; i++ {
+		lst.PushBack(rand.Intn(100))
+	}
+}
+
 func main() {
+	list.New()
+	lst := container.New()
 
-}
+	fillRandom(lst, 10)
+	fmt.Println(lst.IsEmpty())
+	fmt.Printf("Size:%d\n", lst.Size())
 
-type IntNode struct {
-	Value int
-	next  *IntNode
-	prev  *IntNode
-}
+	lst.Clear()
 
-type CSDIntList struct {
-	head *IntNode
-	tail *IntNode
-	size int
+	fmt.Printf("Size:%d\n", lst.Size())
+
+	fmt.Println(lst.IsEmpty())
 }
