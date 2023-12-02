@@ -1,4 +1,4 @@
-package container
+package intlist
 
 type IntNode struct {
 	Value int
@@ -62,27 +62,27 @@ func (lst *CSDIntList) IsNotEmpty() bool {
 }
 
 func (lst *CSDIntList) InsertAfter(value int, node *IntNode) *IntNode {
-
+	return nil
 }
 
 func (lst *CSDIntList) InsertBefore(value int, node *IntNode) *IntNode {
-
+	return nil
 }
 
 func (lst *CSDIntList) RemoveFront() (bool, int) {
-
+	return false, 0
 }
 
 func (lst *CSDIntList) RemoveBack() (bool, int) {
-
+	return false, 0
 }
 
 func (lst *CSDIntList) RemoveByValue(value int) bool {
-
+	return false
 }
 
 func (lst *CSDIntList) RemoveByNode(node *IntNode) bool {
-
+	return false
 }
 
 func (lst *CSDIntList) PushBack(value int) *IntNode {
