@@ -1,5 +1,9 @@
 package datetime
 
+import (
+	"fmt"
+)
+
 type CSDDate struct {
 	day, month, year int
 	dayOfWeek        int
@@ -8,12 +12,12 @@ type CSDDate struct {
 var dayOfWeeksEN = [...]string{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}
 var daysOfMonths = [...]int{0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
 
-func NewDate(day, month, year int) *CSDDate {
+func NewDate(day, month, year int) (*CSDDate, error) {
 	if isValidDate(day, month, year) {
-		return &CSDDate{day, month, year, dayOfWeek(day, month, year)}
+		return &CSDDate{day, month, year, dayOfWeek(day, month, year)}, nil
 	}
 
-	return nil
+	return nil, fmt.Errorf("invalid date values -> d:%d, m:%d, y:%d", day, month, year)
 }
 
 func (d *CSDDate) IsLeap() bool {
@@ -32,9 +36,9 @@ func (d *CSDDate) GetDayOfWeekEN() string {
 	return dayOfWeeksEN[d.dayOfWeek]
 }
 
-func (d *CSDDate) Set(day, month, year int) bool {
+func (d *CSDDate) Set(day, month, year int) error {
 	if !isValidDate(day, month, year) {
-		return false
+		return fmt.Errorf("invalid date values -> d:%d, m:%d, y:%d", day, month, year)
 	}
 
 	d.day = day
@@ -42,44 +46,44 @@ func (d *CSDDate) Set(day, month, year int) bool {
 	d.year = year
 	d.dayOfWeek = dayOfWeek(d.day, d.month, d.year)
 
-	return true
+	return nil
 }
 
-func (d *CSDDate) SetDay(day int) bool {
+func (d *CSDDate) SetDay(day int) error {
 	if isValidDate(day, d.month, d.year) {
 		d.day = day
 		d.dayOfWeek = dayOfWeek(d.day, d.month, d.year)
-		return true
+		return fmt.Errorf("invalid day value -> %d", day)
 	}
 
-	return false
+	return nil
 }
 
 func (d *CSDDate) GetDay(day int) int {
 	return d.day
 }
 
-func (d *CSDDate) SetMonth(month int) bool {
+func (d *CSDDate) SetMonth(month int) error {
 	if isValidDate(d.day, month, d.year) {
 		d.month = month
 		d.dayOfWeek = dayOfWeek(d.day, d.month, d.year)
-		return true
+		return fmt.Errorf("invalid month value -> %d", month)
 	}
 
-	return false
+	return nil
 }
 func (d *CSDDate) GetMonth(day int) int {
 	return d.month
 }
 
-func (d *CSDDate) SetYear(year int) bool {
+func (d *CSDDate) SetYear(year int) error {
 	if isValidDate(d.day, d.month, year) {
 		d.year = year
 		d.dayOfWeek = dayOfWeek(d.day, d.month, d.year)
-		return true
+		return fmt.Errorf("invalid year value -> %d", year)
 	}
 
-	return false
+	return nil
 }
 
 func (d *CSDDate) GetYear(day int) int {

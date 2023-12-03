@@ -1,7 +1,7 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	github.com/golang-collections/collections/queue paketindeki Queue veri yapısı ile FIFO kuyruk temsil edilmektedir
+	Interface
 
 ------------------------------------------------------------------------------------------------------------------------
 */
@@ -9,22 +9,13 @@
 package main
 
 import (
-	"fmt"
-	"github.com/golang-collections/collections/queue"
+	"SampleGoLand/csd/cmath"
+	"SampleGoLand/csd/console"
 )
 
 func main() {
-	q := queue.New()
+	a := console.ReadFloat64("Input first value:", "Invalid value!...")
+	result := cmath.CLog2(a)
 
-	for i := 0; i < 10; i++ {
-		q.Enqueue(i * 10)
-	}
-
-	for {
-		value := q.Dequeue()
-		if q.Len() == 0 {
-			break
-		}
-		fmt.Printf("%v ", value)
-	}
+	console.WriteLine("log2(%f) = %f", a, result)
 }
