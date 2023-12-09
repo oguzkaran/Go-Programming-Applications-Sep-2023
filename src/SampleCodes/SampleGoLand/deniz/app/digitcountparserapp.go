@@ -4,9 +4,11 @@ import (
 	"SampleGoLand/csd/console"
 	"SampleGoLand/csd/parser/source/str"
 	"SampleGoLand/deniz/parser"
+	"fmt"
 )
 
 func RunDigitCountParserApp() {
+	fmt.Println("Letter counter")
 	dp := parser.New()
 
 	for {
@@ -19,6 +21,6 @@ func RunDigitCountParserApp() {
 
 		dp.Parse(ss)
 
-		console.WriteLine("Number of digits Count:%d", dp.Count())
+		fmt.Printf("Number of digits Count:%d\n", dp.Count())
 	}
 }

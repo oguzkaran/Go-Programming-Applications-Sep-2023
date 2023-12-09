@@ -4,9 +4,11 @@ import (
 	"SampleGoLand/csd/console"
 	"SampleGoLand/csd/parser"
 	"SampleGoLand/csd/parser/source/str"
+	"fmt"
 )
 
 func RunWhitespaceCountParserApp() {
+	fmt.Println("Whitespace counter")
 	wp := parser.New()
 
 	for {
@@ -19,6 +21,6 @@ func RunWhitespaceCountParserApp() {
 
 		wp.Parse(ss)
 
-		console.WriteLine("Count:%d", wp.Count())
+		fmt.Printf("Number of whitespaces:%d\n", wp.Count())
 	}
 }
