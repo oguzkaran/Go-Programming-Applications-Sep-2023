@@ -52,6 +52,13 @@ func ReadFloat64(prompt, errorPrompt string) float64 {
 	}
 }
 
+func ReadString(prompt string) string {
+
+	str, _ := g_kb.ReadString('\n')
+
+	return str
+}
+
 func Write(fmtStr string, a ...any) error {
 	_, err := fmt.Printf(fmtStr, a)
 
