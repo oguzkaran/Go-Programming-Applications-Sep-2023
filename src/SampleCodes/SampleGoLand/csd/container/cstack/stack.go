@@ -8,15 +8,15 @@ func New() *Stack {
 	return &Stack{}
 }
 
-func (stack *Stack) Push(value interface{}) {
+func (stack *Stack) Push(value any) {
 	//...
 }
 
-func (stack *Stack) Peek() interface{} {
+func (stack *Stack) Peek() any {
 	return nil
 }
 
-func (stack *Stack) Pop() interface{} {
+func (stack *Stack) Pop() any {
 	return nil
 }
 

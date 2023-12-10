@@ -8,15 +8,15 @@ func New() *Queue {
 	return &Queue{}
 }
 
-func (stack *Queue) Enqueue(value interface{}) {
+func (stack *Queue) Enqueue(value any) {
 	//...
 }
 
-func (stack *Queue) Dequeue() interface{} {
+func (stack *Queue) Dequeue() any {
 	return nil
 }
 
-func (stack *Queue) Peek() interface{} {
+func (stack *Queue) Peek() any {
 	return nil
 }
 

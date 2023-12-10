@@ -9,3 +9,8 @@ type Worker struct {
 func (w *Worker) CalculatePayment() float64 {
 	return float64(w.HourPerDay) * w.FeePerHour * 30
 }
+
+func (w *Worker) Retired() bool {
+	//...
+	return false
+}
