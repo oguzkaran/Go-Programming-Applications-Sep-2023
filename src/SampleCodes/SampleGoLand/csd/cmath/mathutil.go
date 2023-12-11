@@ -1,4 +1,4 @@
-package operation
+package cmath
 
 import "math"
 
