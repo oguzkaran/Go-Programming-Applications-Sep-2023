@@ -1,8 +1,7 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Programcı kısıt belirlemek için yine bir interface yazar. Bu interface içerisinde kısıt için belirleyeceği türleri
-	| atomu ile belirtir
+	Aşağıdaki demo örnekte shallow copy yapıldığına dikkat ediniz
 
 ------------------------------------------------------------------------------------------------------------------------
 */
@@ -10,17 +9,15 @@
 package main
 
 import (
-	"SampleGoLand/csd/util/slice"
-	"fmt"
+	"SampleGoLand/csd/tuple"
 )
 
-func main() {
-	a := []int{1, 2, 3, 4, 5, 6, 7}
-	b := []int{1, 2, 3, 4, 5, 6, 7}
+type Point[T any] tuple.Pair[T, T]
 
-	if slice.Equals(a, b) {
-		fmt.Println("Same arrays")
-	} else {
-		fmt.Println("Different arrays")
-	}
+func (p *Point[int]) Clone() Point[int] {
+	return *p
+}
+
+func main() {
+
 }

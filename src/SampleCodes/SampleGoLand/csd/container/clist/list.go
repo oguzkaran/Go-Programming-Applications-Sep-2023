@@ -16,4 +16,8 @@ func (lst *List) WalkList(f func(a any)) {
 	}
 }
 
+func (lst *List) Clone() *List {
+	return nil
+}
+
 //...
