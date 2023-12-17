@@ -1,25 +1,25 @@
 package cstack
 
-type Stack struct {
+type Stack[T any] struct {
 	//...
 }
 
-func New() *Stack {
-	return &Stack{}
+func New[T any]() *Stack[T] {
+	return &Stack[T]{}
 }
 
-func (stack *Stack) Push(value any) {
+func (stack *Stack[T]) Push(value *T) {
 	//...
 }
 
-func (stack *Stack) Peek() any {
+func (stack *Stack[T]) Peek() *T {
 	return nil
 }
 
-func (stack *Stack) Pop() any {
+func (stack *Stack[T]) Pop() *T {
 	return nil
 }
 
-func (stack *Stack) Len() int {
+func (stack *Stack[T]) Len() int {
 	return 0
 }

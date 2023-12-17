@@ -1,25 +1,25 @@
 package cqueue
 
-type Queue struct {
+type Queue[E any] struct {
 	//...
 }
 
-func New() *Queue {
-	return &Queue{}
+func New[T any]() *Queue[T] {
+	return &Queue[T]{}
 }
 
-func (stack *Queue) Enqueue(value any) {
+func (stack *Queue[T]) Enqueue(value *T) {
 	//...
 }
 
-func (stack *Queue) Dequeue() any {
+func (stack *Queue[T]) Dequeue() *T {
 	return nil
 }
 
-func (stack *Queue) Peek() any {
+func (stack *Queue[T]) Peek() *T {
 	return nil
 }
 
-func (stack *Queue) Len() int {
+func (stack *Queue[T]) Len() int {
 	return 0
 }

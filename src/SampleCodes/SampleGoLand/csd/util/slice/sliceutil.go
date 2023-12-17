@@ -2,27 +2,27 @@ package slice
 
 import "math/rand"
 
-func ForEach[T any](s []T, f func(int, T)) {
+func ForEach[S ~[]T, T any](s S, f func(int, T)) {
 	ForEachCount(s, len(s), f)
 }
 
-func ForEachCount[T any](s []T, count int, f func(int, T)) {
+func ForEachCount[S ~[]T, T any](s S, count int, f func(int, T)) {
 	for i := 0; i < count; i++ {
 		f(i, s[i])
 	}
 }
 
-func ReduceSlice[T any](identity T, a []T, f func(T, T) T) T {
+func ReduceSlice[S ~[]T, T any](identity T, s S, f func(T, T) T) T {
 	result := identity
 
-	for _, val := range a {
+	for _, val := range s {
 		result = f(result, val)
 	}
 
 	return result
 }
 
-func CopyIf[T any](src, dest []T, pred func(T) bool) int {
+func CopyIf[S ~[]T, T any](src, dest S, pred func(T) bool) int {
 	index := 0
 
 	for _, v := range src {
@@ -35,19 +35,19 @@ func CopyIf[T any](src, dest []T, pred func(T) bool) int {
 	return index
 }
 
-func Transform[T, R any](src []T, dest []R, f func(T) R) {
+func Transform[S ~[]T, D ~[]R, T, R any](src S, dest D, f func(T) R) {
 	for i, v := range src {
 		dest[i] = f(v)
 	}
 }
 
-func Equals[T comparable](a, b []T) bool {
-	if len(a) != len(b) {
+func Equals[S ~[]T, T comparable](s1, s2 S) bool {
+	if len(s1) != len(s2) {
 		return false
 	}
 
-	for i, _ := range a {
-		if a[i] != b[i] {
+	for i, _ := range s1 {
+		if s1[i] != s2[i] {
 			return false
 		}
 	}
@@ -66,14 +66,14 @@ func CreateSlice[T any](count int, f func() T) []T {
 }
 
 func CreateRandomIntSlice(count, origin, bound int) []int {
-	return CreateSlice(count, func() int { return rand.Intn(bound-origin) + origin })
+	return CreateSlice[int](count, func() int { return rand.Intn(bound-origin) + origin })
 }
 
 func CreateRandomFloat64Slice(count int, origin, bound float64) []float64 {
 	return CreateSlice(count, func() float64 { return rand.Float64()*(bound-origin) + origin })
 }
 
-func MaxFunc[T any](s []T, comp func(T, T) int) T {
+func MaxFunc[S ~[]T, T any](s S, comp func(T, T) int) T {
 	size := len(s)
 	result := s[0]
 
@@ -86,7 +86,7 @@ func MaxFunc[T any](s []T, comp func(T, T) int) T {
 	return result
 }
 
-func MinFunc[T any](s []T, comp func(T, T) int) T {
+func MinFunc[S ~[]T, T any](s S, comp func(T, T) int) T {
 	size := len(s)
 	result := s[0]
 
