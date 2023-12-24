@@ -1,5 +1,6 @@
 create table users (
        username varchar(100) primary key,
+       password varchar(100) not null,
        name varchar(300) not null,
        phone char(50) not null
     -- ...
@@ -23,3 +24,22 @@ create table payments (
       unit_price double precision not null
     -- ...
 );
+
+create or replace function get_all_users()
+returns table (uname varchar(100), passwd varchar(100), fullname varchar(100), phone char(50))
+as
+$$
+    begin
+        return query select * from users;
+    end
+$$ language plpgsql;
+
+
+create or replace function get_user_by_username(varchar)
+returns table (uname varchar(100), passwd varchar(100), fullname varchar(100), phone char(50))
+as
+$$
+    begin
+        return query select * from users where username = $1;
+    end
+$$ language plpgsql;
