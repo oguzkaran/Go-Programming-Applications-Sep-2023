@@ -2,8 +2,8 @@ package main
 
 import (
 	"PaymentServiceApp/csd/console"
+	"PaymentServiceApp/data/dal"
 	"PaymentServiceApp/data/entity"
-	"PaymentServiceApp/data/repository"
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
@@ -33,34 +33,28 @@ func main() {
 
 	fmt.Println("Connected...")
 
-	userRepository := repository.NewUserRepository(db)
+	helper := dal.NewPaymentAppHelper(db)
 
 	for {
-		user := getUser()
+		username := console.ReadString("Input username:")
 
-		if user == nil {
+		if username == "quit" {
 			break
 		}
 
-		_, err := userRepository.Save(user)
+		user, err := helper.FindUserByUsername(username)
 
 		if err != nil {
 			fmt.Println(err.Error())
 			continue
 		}
 
-		fmt.Println("All users:")
-
-		users, err := userRepository.FindAll()
-
-		if err != nil {
-			fmt.Println(err.Error())
-			continue
+		if user != nil {
+			fmt.Printf("User %s found:%s, %s\n", username, user.Name, user.Password)
+		} else {
+			fmt.Printf("User %s not found\n", username)
 		}
 
-		for _, u := range users {
-			fmt.Printf("%s, %s, %s, %s\n", u.Username, u.Password, u.Name, u.Phone)
-		}
 	}
 
 	err = db.Close()

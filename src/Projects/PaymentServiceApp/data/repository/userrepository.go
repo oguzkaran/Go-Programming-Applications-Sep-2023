@@ -6,8 +6,8 @@ import (
 )
 
 const saveCmd = `insert into users (username, password, name, phone) values ($1, $2, $3, $4)`
-const findAllCmd = "select * from users"
-const findByIdCmd = `select * from users where username=$1`
+const findAllCmd = "select * from get_all_users()"
+const findByIdCmd = `select * from get_user_by_username($1)` //`select * from users where username=$1`
 const countCmd = "select count(*) from users"
 
 type UserRepository struct {
@@ -25,6 +25,8 @@ func (ur *UserRepository) Count() (int, error) {
 		return 0, err
 	}
 
+	rows.Next()
+
 	var count int
 
 	err = rows.Scan(&count)
@@ -34,6 +36,11 @@ func (ur *UserRepository) Count() (int, error) {
 	}
 
 	return count, nil
+}
+
+func (ur *UserRepository) ExistsById(username string) (bool, error) {
+	//TODO
+	panic("TODO")
 }
 
 func (ur *UserRepository) FindAll() ([]entity.User, error) {
@@ -131,11 +138,6 @@ func (ur *UserRepository) DeleteAll() error {
 }
 
 func (ur *UserRepository) DeleteAllById(ids []string) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (ur *UserRepository) ExistsById(id string) (bool, error) {
 	//TODO implement me
 	panic("implement me")
 }
