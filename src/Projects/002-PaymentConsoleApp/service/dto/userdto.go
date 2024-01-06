@@ -4,7 +4,7 @@ type UserDTO struct {
 	Username, Name, Phone string
 }
 
-func NewUser(username, name, phone string) *UserDTO {
+func NewUserDTO(username, name, phone string) *UserDTO {
 	return &UserDTO{username, name, phone}
 }
 
