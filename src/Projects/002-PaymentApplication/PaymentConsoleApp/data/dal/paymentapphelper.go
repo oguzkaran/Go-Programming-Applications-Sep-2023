@@ -29,4 +29,8 @@ func (ph *PaymentAppHelper) Close() error {
 	return ph.db.Close()
 }
 
+func (ph *PaymentAppHelper) ExistsUserByUsername(username string) (bool, error) {
+	return ph.userRepository.ExistsById(username)
+}
+
 //...

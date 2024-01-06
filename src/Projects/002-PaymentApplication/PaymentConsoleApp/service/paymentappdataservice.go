@@ -22,9 +22,15 @@ func NewPaymentAppDataService(connStr string) (*PaymentAppDataService, error) {
 }
 
 func (ps *PaymentAppDataService) FindUserByUsername(username string) (*dto.UserDTO, error) {
-	user, _ := ps.helper.FindUserByUsername(username)
+	user, err := ps.helper.FindUserByUsername(username)
 
-	//...
+	if err != nil {
+		return nil, err
+	}
+
+	if user == nil {
+		return nil, nil
+	}
 
 	return dto.NewUserDTO(user.Username, user.Name, user.Phone), nil
 }
@@ -38,6 +44,15 @@ func (ps *PaymentAppDataService) SaveUser(userSaveDTO *dto.UserSaveDTO) error {
 	}
 
 	return nil
+}
+
+func (ps *PaymentAppDataService) ExistsUserByUsername(username string) bool {
+	status, err := ps.helper.ExistsUserByUsername(username)
+	if err != nil {
+		return false
+	}
+
+	return status
 }
 
 func (ps *PaymentAppDataService) Close() error {

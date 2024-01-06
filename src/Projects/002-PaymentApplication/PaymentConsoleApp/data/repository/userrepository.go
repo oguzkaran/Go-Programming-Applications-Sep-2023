@@ -46,7 +46,7 @@ func (ur *UserRepository) Count() (int, error) {
 }
 
 func (ur *UserRepository) ExistsById(username string) (bool, error) {
-	rows, err := ur.db.Query(existsByUsernameCmd)
+	rows, err := ur.db.Query(existsByUsernameCmd, username)
 
 	if err != nil {
 		return false, err

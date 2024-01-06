@@ -3,9 +3,9 @@
 
 	Sınıf Çalışması: Aşağıdaki uygulamayı yazınız:
 		- Uygulama aşağıdaki menü ile başlayacaktır:
-				1. Users
-				2. Products
-				3. Payments
+				1. User Operations
+				2. Product Operations
+				3. Payment Operations
 				4. Exit
 				Option:
 
