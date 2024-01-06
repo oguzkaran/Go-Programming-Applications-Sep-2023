@@ -5,10 +5,11 @@ import (
 	"database/sql"
 )
 
-const saveCmd = `insert into users (username, password, name, phone) values ($1, $2, $3, $4)`
+const saveCmd = `call sp_insert_user($1, $2, $3, $4)`
 const findAllCmd = "select * from get_all_users()"
-const findByIdCmd = `select * from get_user_by_username($1)` //`select * from users where username=$1`
-const countCmd = "select count(*) from users"
+const findByIdCmd = `select * from get_user_by_username($1)`
+const countCmd = "select * from get_user_count()"
+const existsByUsernameCmd = `select * from user_exists($1)`
 
 type UserRepository struct {
 	db *sql.DB
@@ -35,12 +36,39 @@ func (ur *UserRepository) Count() (int, error) {
 		return 0, err
 	}
 
+	err = rows.Close()
+
+	if err != nil {
+		return 0, err
+	}
+
 	return count, nil
 }
 
 func (ur *UserRepository) ExistsById(username string) (bool, error) {
-	//TODO
-	panic("TODO")
+	rows, err := ur.db.Query(existsByUsernameCmd)
+
+	if err != nil {
+		return false, err
+	}
+
+	rows.Next()
+
+	var exists bool
+
+	err = rows.Scan(&exists)
+
+	if err != nil {
+		return false, err
+	}
+
+	err = rows.Close()
+
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
 }
 
 func (ur *UserRepository) FindAll() ([]entity.User, error) {
@@ -64,6 +92,12 @@ func (ur *UserRepository) FindAll() ([]entity.User, error) {
 		users = append(users, *entity.NewUser(username, password, name, phone))
 	}
 
+	err = rows.Close()
+
+	if err != nil {
+		return nil, err
+	}
+
 	return users, nil
 }
 
@@ -81,6 +115,12 @@ func (ur *UserRepository) FindById(username string) (*entity.User, error) {
 	var password, name, phone string
 
 	err = rows.Scan(&username, &password, &name, &phone)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = rows.Close()
 
 	if err != nil {
 		return nil, err
@@ -107,6 +147,12 @@ func (ur *UserRepository) FindAllFunc(f func(*entity.User)) error {
 		f(entity.NewUser(username, password, name, phone))
 	}
 
+	err = rows.Close()
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -123,26 +169,21 @@ func (ur *UserRepository) Save(user *entity.User) (*entity.User, error) {
 ///////////////////////////////////////////////////////////////////////////////////////
 
 func (ur *UserRepository) DeleteById(id string) error {
-	//TODO implement me
-	panic("implement me")
+	panic("not implemented yet!...")
 }
 
 func (ur *UserRepository) Delete(entity *entity.User) error {
-	//TODO implement me
-	panic("implement me")
+	panic("not implemented yet!...")
 }
 
 func (ur *UserRepository) DeleteAll() error {
-	//TODO implement me
-	panic("implement me")
+	panic("not implemented yet!...")
 }
 
 func (ur *UserRepository) DeleteAllById(ids []string) error {
-	//TODO implement me
-	panic("implement me")
+	panic("not implemented yet!...")
 }
 
 func (ur *UserRepository) SaveAll(entities ...entity.User) ([]entity.User, error) {
-	//TODO implement me
-	panic("implement me")
+	panic("not implemented yet!...")
 }

@@ -25,6 +25,15 @@ create table payments (
     -- ...
 );
 
+create or replace procedure sp_insert_user(varchar(100), varchar(100), varchar(100), char(50))
+language plpgsql
+as
+$$
+    begin
+        insert into users (username, password, name, phone) values ($1, $2, $3, $4);
+    end
+$$;
+
 create or replace function get_all_users()
 returns table (uname varchar(100), passwd varchar(100), fullname varchar(100), phone char(50))
 as
@@ -41,5 +50,24 @@ as
 $$
     begin
         return query select * from users where username = $1;
+    end
+$$ language plpgsql;
+
+
+create or replace function get_user_count()
+returns table (n_users bigint)
+as
+$$
+    begin
+        return query select count(*) from users;
+    end
+$$ language plpgsql;
+
+create or replace function user_exists(varchar(100))
+returns table (u_exits bool)
+as
+$$
+    begin
+        return query select exists (select * from users where username = $1);
     end
 $$ language plpgsql;
