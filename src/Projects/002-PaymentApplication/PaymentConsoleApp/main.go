@@ -50,6 +50,7 @@
 		yapılacaktır
 		3. Tüm repository'ler CrudRepository arayüzünü destekleyecektir. İhtiyaç olmayan metotlar panic fonksiyonu
 		çağrılarak bırakılacaktır (not implemented yet!...)
+		4. UserRepository'nin implemente edilen fonksiyonları için birim testlerini yazınız
 
 ------------------------------------------------------------------------------------------------------------------------
 */
