@@ -36,7 +36,7 @@ func (ps *PaymentAppDataService) FindUserByUsername(username string) (*dto.UserD
 }
 
 func (ps *PaymentAppDataService) SaveUser(userSaveDTO *dto.UserSaveDTO) error {
-	user := entity.NewUser(userSaveDTO.Username, userSaveDTO.Password, userSaveDTO.Name, userSaveDTO.Phone)
+	user := entity.NewUser(userSaveDTO.Username, userSaveDTO.Password, userSaveDTO.Name, userSaveDTO.Phone, userSaveDTO.BirthDate)
 	_, err := ps.helper.SaveUser(user)
 
 	if err != nil {

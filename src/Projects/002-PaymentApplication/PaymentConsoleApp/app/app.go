@@ -30,7 +30,7 @@ func getUser() *dto.UserSaveDTO {
 	}
 
 	return dto.NewUserSaveDTO(username, console.ReadString("Input password:"), console.ReadString("Input name:"),
-		console.ReadString("Input phone:"))
+		console.ReadString("Input phone:"), console.ReadString("Input birth date:"))
 }
 
 func displayMainMenu() {

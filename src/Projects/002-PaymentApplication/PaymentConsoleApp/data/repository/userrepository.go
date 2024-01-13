@@ -3,9 +3,10 @@ package repository
 import (
 	"PaymentServiceApp/data/entity"
 	"database/sql"
+	"time"
 )
 
-const saveCmd = `call sp_insert_user($1, $2, $3, $4)`
+const saveCmd = `call sp_insert_user($1, $2, $3, $4, $5)`
 const findAllCmd = "select * from get_all_users()"
 const findByIdCmd = `select * from get_user_by_username($1)`
 const countCmd = "select * from get_user_count()"
@@ -82,14 +83,15 @@ func (ur *UserRepository) FindAll() ([]entity.User, error) {
 
 	for rows.Next() {
 		var username, password, name, phone string
+		var birthDate time.Time
 
-		err = rows.Scan(&username, &password, &name, &phone)
+		err = rows.Scan(&username, &password, &name, &phone, &birthDate)
 
 		if err != nil {
 			return nil, err
 		}
 
-		users = append(users, *entity.NewUser(username, password, name, phone))
+		users = append(users, *entity.NewUser(username, password, name, phone, birthDate))
 	}
 
 	err = rows.Close()
@@ -113,8 +115,9 @@ func (ur *UserRepository) FindById(username string) (*entity.User, error) {
 	}
 
 	var password, name, phone string
+	var birthDate time.Time
 
-	err = rows.Scan(&username, &password, &name, &phone)
+	err = rows.Scan(&username, &password, &name, &phone, &birthDate)
 
 	if err != nil {
 		return nil, err
@@ -126,7 +129,7 @@ func (ur *UserRepository) FindById(username string) (*entity.User, error) {
 		return nil, err
 	}
 
-	return entity.NewUser(username, password, name, phone), nil
+	return entity.NewUser(username, password, name, phone, birthDate), nil
 }
 
 func (ur *UserRepository) FindAllFunc(f func(*entity.User)) error {
@@ -138,13 +141,14 @@ func (ur *UserRepository) FindAllFunc(f func(*entity.User)) error {
 
 	for rows.Next() {
 		var username, password, name, phone string
+		var birthDate time.Time
 
-		err = rows.Scan(&username, &password, &name, &phone)
+		err = rows.Scan(&username, &password, &name, &phone, &birthDate)
 
 		if err != nil {
 			return err
 		}
-		f(entity.NewUser(username, password, name, phone))
+		f(entity.NewUser(username, password, name, phone, birthDate))
 	}
 
 	err = rows.Close()
@@ -157,7 +161,7 @@ func (ur *UserRepository) FindAllFunc(f func(*entity.User)) error {
 }
 
 func (ur *UserRepository) Save(user *entity.User) (*entity.User, error) {
-	_, err := ur.db.Exec(saveCmd, user.Username, user.Password, user.Name, user.Phone)
+	_, err := ur.db.Exec(saveCmd, user.Username, user.Password, user.Name, user.Phone, user.BirthDate)
 
 	if err != nil {
 		return nil, err
