@@ -33,18 +33,12 @@
 package main
 
 import (
-	"SampleGoLand/csd/console"
 	"fmt"
 	"time"
 )
 
 func main() {
-	str := console.ReadString("Input birthdate(YYYY-MM-DD):")
-	birthDate, err := time.Parse(time.DateOnly, str)
+	date := time.Date(2020, time.March, 0, 0, 0, 0, 0, time.Local)
 
-	if err == nil {
-		fmt.Println(birthDate)
-	} else {
-		fmt.Printf("Invalid date:%s\n", err.Error())
-	}
+	fmt.Println(date)
 }
