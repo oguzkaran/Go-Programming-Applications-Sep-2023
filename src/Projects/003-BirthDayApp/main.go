@@ -1,6 +1,6 @@
 package main
 
-import "003-BithDateRemainder/app"
+import "BirthDayApp/app"
 
 func main() {
 	app.Run()
