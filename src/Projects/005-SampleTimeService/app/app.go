@@ -4,6 +4,8 @@
 	- ~/date/birth?name=Oguz&surname=Karan&day=10&dmonth=9&year=1976: Verilen bilgilere göre aşağıdaki json formatına dönen
 	servis
 		{"fullName": "Oğuz Karan, "birthDate": "10/09/1976", "age":47.39, "today":"20/01/2024"}
+
+	Birth servisindeki bilgileri bir veritabanına ekleyiniz
 */
 
 package app
@@ -67,6 +69,33 @@ func timeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func dateHandler(w http.ResponseWriter, r *http.Request) {
+	if !checkMethod(w, r, "Method must be GET!...") {
+		return
+	}
+
+	result, name := checkParameter(w, r, "name", `Parameter "name" required!...`, http.StatusBadRequest)
+	if !result {
+		return
+	}
+	now := time.Now()
+	w.WriteHeader(http.StatusOK)
+	ci := jsondata.NewClientInfo(r.RemoteAddr, "Hello "+name, now.Format("02/01/2006"))
+	data, err := json.Marshal(ci)
+	if !checkError(err, w, "Internal server error!...", http.StatusInternalServerError) {
+		return
+	}
+	_, err = fmt.Fprintf(w, "%s", string(data))
+
+	if !checkError(err, w, "Internal server error!...", http.StatusInternalServerError) {
+		return
+	}
+}
+
+func birthDateHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Under construction")
+}
+
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/" {
 		http.Error(w, "No default url", http.StatusNotAcceptable)
@@ -96,7 +125,10 @@ func createServerInfo(portInfo string) (*http.ServeMux, *http.Server) {
 
 func addHandlers(handler *http.ServeMux) {
 	handler.Handle("/time", http.HandlerFunc(timeHandler))
+	handler.Handle("/date", http.HandlerFunc(dateHandler))
+	handler.Handle("/date/birth", http.HandlerFunc(birthDateHandler))
 	handler.Handle("/", http.HandlerFunc(defaultHandler))
+
 }
 
 func startServer(server *http.Server) {
