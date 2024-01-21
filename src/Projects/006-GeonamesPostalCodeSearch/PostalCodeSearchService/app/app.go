@@ -1,6 +1,6 @@
 /*
 Sınıf Çalışması: Aşağıdaki GET servise erişerek bir posta koduna ilişkin JSON veriyi elde ediniz. Uygulamada yalnızca
-posta kodu alınacaktır. Diğer parametreler URL'de görüldüğü şekilde bırakılabilir
+posta kodu alınacaktır. Diğer parametreler URL'de görüldüğü şekilde olacaktır
 http://api.geonames.org/postalCodeSearchJSON?formatted=true&postalcode=67000&maxRows=10&username=csystem&country=tr
 */
 package app
