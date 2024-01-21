@@ -6,22 +6,21 @@ http://api.geonames.org/postalCodeSearchJSON?formatted=true&postalcode=67000&max
 package app
 
 import (
+	"PostalCodeSearchService/app/jsondata"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"time"
 )
 
-func checkArguments() {
-	if len(os.Args) != 2 {
-		fmt.Printf("Wrong number of arguments!...")
-		os.Exit(1)
-	}
-}
+const server = "http://api.geonames.org"
+const postalCodeSearcEndPoint = "/postalCodeSearchJSON"
+const postalCodeSearchURL = server + postalCodeSearcEndPoint
 
-func timeClientCallback(name, server string) (int, string) {
-	req, err := http.NewRequest("GET", server+"/time?name="+name, nil)
+func postalCodeSearchCallback(postalCode int, server string) (int, string) {
+	url := fmt.Sprintf("%s?formatted=true&postalcode=%d&maxRows=10&username=csystem&country=tr", postalCodeSearchURL, postalCode)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		fmt.Printf("Error in request:%s", err.Error())
 		return http.StatusInternalServerError, ""
@@ -29,6 +28,7 @@ func timeClientCallback(name, server string) (int, string) {
 
 	client := http.Client{Timeout: 20 * time.Second}
 	res, err := client.Do(req) //Response'un kapatılması gerekir. İleride defer function'lar yapacağız
+	pi := jsondata.PostalCodeInfo{}
 
 	defer res.Body.Close()
 
@@ -48,18 +48,41 @@ func timeClientCallback(name, server string) (int, string) {
 		return http.StatusInternalServerError, ""
 	}
 
+	err = json.Unmarshal(data, &pi)
+
+	if err != nil {
+		fmt.Printf("Data Unmarshalerror:%s", err.Error())
+		return http.StatusInternalServerError, ""
+	}
+
+	for _, pc := range pi.PostalCodes {
+		fmt.Println(pc.PlaceName)
+	}
+
 	return res.StatusCode, string(data)
 }
 
-func Run() {
-	checkArguments()
-	server := os.Args[1]
-	fmt.Printf("Server:%s\n", server)
-	status, message := timeClientCallback("Deniz", server)
+func readPostalCode(prompt string) int {
+	var code int
 
-	if status == http.StatusOK {
-		fmt.Println(message)
-	} else {
-		fmt.Printf("Status Code:%d\n", status)
+	fmt.Print(prompt)
+	fmt.Scanf("%d", &code)
+
+	return code
+}
+
+func Run() {
+	for {
+		code := readPostalCode("Input postal code:")
+		if code <= 0 {
+			break
+		}
+		status, message := postalCodeSearchCallback(code, server)
+
+		if status == http.StatusOK {
+			fmt.Println(message)
+		} else {
+			fmt.Printf("Status Code:%d\n", status)
+		}
 	}
 }

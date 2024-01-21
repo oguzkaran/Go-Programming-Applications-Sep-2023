@@ -1,7 +1,7 @@
 package main
 
 import (
-	"SampleTimeServiceApp/app"
+	"PostalCodeSearchService/app"
 )
 
 func main() {
