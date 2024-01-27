@@ -12,7 +12,7 @@ Sınıf Çalışması: date servisine ilişkin bilgileri veritabanına kaydeden 
 package app
 
 import (
-	"SampleTimeServiceApp/app/data/repository"
+	"SampleTimeServiceApp/app/data/dal"
 	"SampleTimeServiceApp/app/data/repository/entity"
 	"SampleTimeServiceApp/app/jsondata"
 	"encoding/json"
@@ -49,21 +49,26 @@ func checkParameter(w http.ResponseWriter, r *http.Request, parameter, message s
 	return true, value
 }
 
-var g_cr *repository.ClientInfoRepository
+var g_helper *dal.TimeServiceHelper
 
-func initRepository() {
-	cr, err := repository.NewClientInfoRepository()
+func initDB() {
+	helper, err := dal.NewTimeServiceHelper()
 	if err != nil {
 		fmt.Printf("Can not connecto to db:%s\n", err.Error())
 		os.Exit(1)
 	}
 
-	g_cr = cr
+	g_helper = helper
 }
 
-func saveClient(ci *jsondata.ClientInfo) {
-	var cie = &entity.ClientInfo{Host: ci.Host, Name: ci.Name, DateTime: ci.DateTime}
-	g_cr.Save(cie)
+func saveTimeClientInfo(ci *jsondata.ClientInfo) {
+	var cie = &entity.TimeClientInfo{Host: ci.Host, Name: ci.Name, DateTime: ci.DateTime}
+	g_helper.SaveTimeClientInfo(cie)
+}
+
+func saveDateClientInfo(ci *jsondata.ClientInfo) {
+	var die = &entity.DateClientInfo{Host: ci.Host, Name: ci.Name, Date: ci.DateTime}
+	g_helper.SaveDateClientInfo(die)
 }
 
 func timeHandler(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +83,7 @@ func timeHandler(w http.ResponseWriter, r *http.Request) {
 	now := time.Now()
 	w.WriteHeader(http.StatusOK)
 	ci := jsondata.NewClientInfo(r.RemoteAddr, "Hello "+name, now.Format("02/01/2006 15:04:05"))
-	saveClient(ci) //Save to db
+	saveTimeClientInfo(ci) //Save to db
 	data, err := json.Marshal(ci)
 	if !checkError(err, w, "Internal server error!...", http.StatusInternalServerError) {
 		return
@@ -102,6 +107,7 @@ func dateHandler(w http.ResponseWriter, r *http.Request) {
 	now := time.Now()
 	w.WriteHeader(http.StatusOK)
 	ci := jsondata.NewClientInfo(r.RemoteAddr, "Hello "+name, now.Format("02/01/2006"))
+	saveDateClientInfo(ci)
 	data, err := json.Marshal(ci)
 	if !checkError(err, w, "Internal server error!...", http.StatusInternalServerError) {
 		return
@@ -160,7 +166,7 @@ func startServer(server *http.Server) {
 
 func Run() {
 	checkArguments()
-	initRepository()
+	initDB()
 	handler, server := createServerInfo(os.Args[1])
 	addHandlers(handler)
 	fmt.Println("Service is waiting for a client")
