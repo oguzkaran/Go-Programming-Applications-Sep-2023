@@ -5,11 +5,15 @@
 		{"fullName": "Oğuz Karan, "birthDate": "10/09/1976", "age":47.39, "today":"20/01/2024"}
 
 	Birth servisindeki bilgileri bir veritabanına ekleyiniz
+
+Sınıf Çalışması: date servisine ilişkin bilgileri veritabanına kaydeden ilgili işlemleri yapınız
 */
 
 package app
 
 import (
+	"SampleTimeServiceApp/app/data/repository"
+	"SampleTimeServiceApp/app/data/repository/entity"
 	"SampleTimeServiceApp/app/jsondata"
 	"encoding/json"
 	"fmt"
@@ -45,6 +49,23 @@ func checkParameter(w http.ResponseWriter, r *http.Request, parameter, message s
 	return true, value
 }
 
+var g_cr *repository.ClientInfoRepository
+
+func initRepository() {
+	cr, err := repository.NewClientInfoRepository()
+	if err != nil {
+		fmt.Printf("Can not connecto to db:%s\n", err.Error())
+		os.Exit(1)
+	}
+
+	g_cr = cr
+}
+
+func saveClient(ci *jsondata.ClientInfo) {
+	var cie = &entity.ClientInfo{Host: ci.Host, Name: ci.Name, DateTime: ci.DateTime}
+	g_cr.Save(cie)
+}
+
 func timeHandler(w http.ResponseWriter, r *http.Request) {
 	if !checkMethod(w, r, "Method must be GET!...") {
 		return
@@ -57,6 +78,7 @@ func timeHandler(w http.ResponseWriter, r *http.Request) {
 	now := time.Now()
 	w.WriteHeader(http.StatusOK)
 	ci := jsondata.NewClientInfo(r.RemoteAddr, "Hello "+name, now.Format("02/01/2006 15:04:05"))
+	saveClient(ci) //Save to db
 	data, err := json.Marshal(ci)
 	if !checkError(err, w, "Internal server error!...", http.StatusInternalServerError) {
 		return
@@ -138,6 +160,7 @@ func startServer(server *http.Server) {
 
 func Run() {
 	checkArguments()
+	initRepository()
 	handler, server := createServerInfo(os.Args[1])
 	addHandlers(handler)
 	fmt.Println("Service is waiting for a client")
