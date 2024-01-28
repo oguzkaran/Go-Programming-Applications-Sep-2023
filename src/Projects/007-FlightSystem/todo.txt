@@ -1,0 +1,21 @@
+
+- DAL katmanının metotlarının birim testlerini yapınız
+
+- Kalkış yeri, varış yeri, kalkış tarihi verildiğinde uygun uçuşları getiren
+fonksiyonu flightreposityory içerisinde yazınız ve DAL katmanına ekleyiniz
+
+- Kalkış yeri, varış yeri, kalkış tarihi ve dönüş verildiğinde uygun uçuşları getiren
+fonksiyonu flightreposityory içerisinde yazınır ve DAL katmanına ekleyiniz. Burada
+varış yerinden kalkış yerine olan uygun uçuşlar da getirilecektir
+
+- Ayrı bir proje olarak Service katmanını ekleyiniz. Servis katmanında gerekli DTO'ları yazınız ve 
+Uygulama katmanından kullanılacak fonksiyonları ekleyiniz
+
+
+Daha sonra eklenecekler:
+- Uçuş listeleme servisi
+- Belirli periyotta uçuş bilgilerini başka bir API'dan alan bir scheduler uygulama
+- Toplam 1 ay geçmiş uçuşları ayrı bir veritabanına backup olarak kaydeden ve ana veritabanından silen
+bir scheduler uygulama
+- Backup verilerine erişmek için gereken servis uygulamaları 
+- Tüm servislere security eklenecektir
