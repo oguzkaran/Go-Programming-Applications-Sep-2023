@@ -14,8 +14,8 @@ import (
 	"time"
 )
 
-func printMessage(message string) {
-	fmt.Println(message)
+func printDateTime() {
+	fmt.Printf("%s\r", time.Now().Format("02/01/2006 15.04.05"))
 }
 
 func runApp() {
@@ -34,8 +34,8 @@ func runApp() {
 		os.Exit(1)
 	}
 
-	_, err = scheduler.NewJob(gocron.OneTimeJob(gocron.OneTimeJobStartDateTime(time.Now().Add(10*time.Second))),
-		gocron.NewTask(printMessage, "Hello, World!..."))
+	_, err = scheduler.NewJob(gocron.DurationJob(1*time.Second),
+		gocron.NewTask(printDateTime))
 
 	if err != nil {
 		fmt.Printf("Problem occurred while creating job:%s\n", err.Error())
