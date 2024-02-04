@@ -1,6 +1,16 @@
+github.com/go-co-op/gocron/v2 v2.2.4 h1:fL6a8/U+BJQ9UbaeqKxua8wY02w4ftKZsxPzLSNOCKk=
+github.com/go-co-op/gocron/v2 v2.2.4/go.mod h1:igssOwzZkfcnu3m2kwnCf/mYj4SmhP9ecSgmYjCOHkk=
 github.com/golang-collections/collections v0.0.0-20130729185459-604e922904d3 h1:zN2lZNZRflqFyxVaTIU61KNKQ9C0055u9CAfpmqUvo4=
 github.com/golang-collections/collections v0.0.0-20130729185459-604e922904d3/go.mod h1:nPpo7qLxd6XL3hWJG/O60sR8ZKfMCiIoNap5GvD12KU=
+github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
+github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/jonboulle/clockwork v0.4.0 h1:p4Cf1aMWXnXAUh8lVfewRBx1zaTSYKrKMF2g3ST4RZ4=
+github.com/jonboulle/clockwork v0.4.0/go.mod h1:xgRqUGwRcjKCO1vbZUEtSLrqKoPSsUpK7fnezOII0kc=
 github.com/oguzkaran/go-programming-apps-sep-2023-libraries-repository v0.0.0-20231119150513-9a1167b1683b h1:WlkC/5gQafZv/YO6WCB5lErELCI9fo/lSawaDbuDtwU=
 github.com/oguzkaran/go-programming-apps-sep-2023-libraries-repository v0.0.0-20231119150513-9a1167b1683b/go.mod h1:y53bJQcrkhQx0sOpQIV6fgyf9HiCPCmcpVHpCRS2VYc=
 github.com/oguzkaran/go-programming-apps-sep-2023-libraries-repository v0.0.0-20231119211959-8a5432a25482 h1:8WwkScvh5MKmPDsais3CQSGiPHlvBmbJVADUO6nNS48=
 github.com/oguzkaran/go-programming-apps-sep-2023-libraries-repository v0.0.0-20231119211959-8a5432a25482/go.mod h1:y53bJQcrkhQx0sOpQIV6fgyf9HiCPCmcpVHpCRS2VYc=
+github.com/robfig/cron/v3 v3.0.1 h1:WdRxkvbJztn8LMz/QEvLN5sBU+xKpSqwwUO1Pjr4qDs=
+github.com/robfig/cron/v3 v3.0.1/go.mod h1:eQICP3HwyT7UooqI/z+Ov+PtYAWygg1TEWWzGIFLtro=
+golang.org/x/exp v0.0.0-20231219180239-dc181d75b848 h1:+iq7lrkxmFNBM7xx+Rae2W6uyPfhPeDWD+n+JgppptE=
+golang.org/x/exp v0.0.0-20231219180239-dc181d75b848/go.mod h1:iRJReGqOEeBhDZGkGbynYwcHlctCvnjTYIamk7uXpHI=
