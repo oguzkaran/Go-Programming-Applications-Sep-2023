@@ -17,9 +17,9 @@ const server = "http://api.geonames.org"
 const weatherInfoEndPoint = "/weatherJSON"
 const weatherInfoURL = server + weatherInfoEndPoint
 
-func postalCodeSearchCallback(postalCode int, server string) (int, string) {
-	url := fmt.Sprintf("%s?formatted=true&north=%f&south=%f&east=%f&west=%f&username=csystem", weatherInfoURL)
-
+func weatherInfoCallback(north, south, east, west float64) (int, string) {
+	url := fmt.Sprintf("%s?formatted=true&north=%f&south=%f&east=%f&west=%f&username=csystem",
+		weatherInfoURL, north, south, east, west)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		fmt.Printf("Error in request:%s", err.Error())
@@ -27,8 +27,8 @@ func postalCodeSearchCallback(postalCode int, server string) (int, string) {
 	}
 
 	client := http.Client{Timeout: 20 * time.Second}
-	res, err := client.Do(req) //Response'un kapatılması gerekir. İleride defer function'lar yapacağız
-	pi := jsondata.PostalCodeInfo{}
+	res, err := client.Do(req)
+	wi := jsondata.WeatherInfo{}
 
 	defer res.Body.Close()
 
@@ -48,37 +48,32 @@ func postalCodeSearchCallback(postalCode int, server string) (int, string) {
 		return http.StatusInternalServerError, ""
 	}
 
-	err = json.Unmarshal(data, &pi)
+	err = json.Unmarshal(data, &wi)
 
 	if err != nil {
-		fmt.Printf("Data Unmarshalerror:%s", err.Error())
+		fmt.Printf("Data Unmarshal error:%s", err.Error())
 		return http.StatusInternalServerError, ""
 	}
 
-	for _, pc := range pi.PostalCodes {
-		fmt.Println(pc.PlaceName)
+	for _, wo := range wi.WeatherObservations {
+		fmt.Printf("%s", wo.Observation)
 	}
 
 	return res.StatusCode, string(data)
 }
 
-func readPostalCode(prompt string) int {
-	var code int
+func readPlaceInfo(prompt string) (float64, float64, float64, float64) {
+	var north, south, east, west float64
 
 	fmt.Print(prompt)
-	fmt.Scanf("%d", &code)
+	fmt.Scanf("%f%f%f%f", &north, south, east, west)
 
-	return code
+	return north, south, east, west
 }
 
 func Run() {
 	for {
-		code := readPostalCode("Input postal code:")
-		if code <= 0 {
-			break
-		}
-		status, message := postalCodeSearchCallback(code, server)
-
+		status, message := weatherInfoCallback(readPlaceInfo("Input place information:"))
 		if status == http.StatusOK {
 			fmt.Println(message)
 		} else {
