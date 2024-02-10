@@ -1,11 +1,7 @@
-/*
-Sınıf Çalışması: Elimizde bulunan yer bilgisine göre periyodik olarak Geonames'den hava durumu bilgilerini çeken
-bir scheduler job yazınız. Bilgilerin sayısının önemi yoktur
-*/
 package app
 
 import (
-	"PostalCodeSearchService/app/jsondata"
+	"WeatherInfoScheduler/app/jsondata"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -28,7 +24,7 @@ func weatherInfoCallback(north, south, east, west float64) (int, string) {
 
 	client := http.Client{Timeout: 20 * time.Second}
 	res, err := client.Do(req)
-	wi := jsondata.WeatherInfo{}
+	wi := jsondata.WeatherInfoView{}
 
 	defer res.Body.Close()
 

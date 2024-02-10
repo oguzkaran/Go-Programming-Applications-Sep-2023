@@ -1,6 +1,6 @@
 package jsondata
 
-type WeatherInfo struct {
+type WeatherInfoView struct {
 	WeatherObservations []struct {
 		Lng              float64 `json:"lng"`
 		Observation      string  `json:"observation"`

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"PostalCodeSearchService/app"
+	"WeatherInfoScheduler/app"
 )
 
 func main() {
