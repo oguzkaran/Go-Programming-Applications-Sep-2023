@@ -1,51 +1,42 @@
-/*
-------------------------------------------------------------------------------------------------------------------------
-	Aşağıdaki örneği inceleyiniz
-------------------------------------------------------------------------------------------------------------------------
-*/
-
 package main
 
 import (
-	"SampleGoLand/csd/console"
 	"fmt"
-	"github.com/go-co-op/gocron/v2"
-	"os"
-	"time"
 )
 
-func printDateTime() {
-	fmt.Printf("%s\r", time.Now().Format("02/01/2006 15.04.05"))
+type NameType string
+
+type SensorInfo struct {
+	Name NameType
+	//...
 }
 
-func runApp() {
-	scheduler, err := gocron.NewScheduler()
+type SensorEvent struct {
+	Sensor *SensorInfo
+	//...
+}
 
-	defer func() {
-		err = scheduler.Shutdown()
-		if err != nil {
-			fmt.Printf("Problem occurred while shut down:%s\n", err.Error())
-			os.Exit(1)
-		}
-	}()
+func NewName() NameType {
+	return NameType("CSD Sensor") //Bu isim herhangi bir yerden elde edilebilir
+}
 
-	if err != nil {
-		fmt.Printf("Problem occurred while creating scheduler:%s\n", err.Error())
-		os.Exit(1)
-	}
+func NewSensorInfo(name NameType) *SensorInfo {
+	return &SensorInfo{Name: name}
+}
 
-	_, err = scheduler.NewJob(gocron.DurationJob(1*time.Second),
-		gocron.NewTask(printDateTime))
+func (si *SensorInfo) GetName() NameType {
+	return si.Name
+}
 
-	if err != nil {
-		fmt.Printf("Problem occurred while creating job:%s\n", err.Error())
-		os.Exit(1)
-	}
-	scheduler.Start()
+func NewSensorEvent(si *SensorInfo) *SensorEvent {
+	return &SensorEvent{Sensor: si}
+}
 
-	console.ReadString("")
+func (e *SensorEvent) PrintName() {
+	fmt.Printf("Sensor Name:%s\n", e.Sensor.GetName())
 }
 
 func main() {
-	runApp()
+	e := InitSensorEvent()
+	e.PrintName()
 }
