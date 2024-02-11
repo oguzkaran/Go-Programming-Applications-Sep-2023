@@ -2,7 +2,7 @@ package entity
 
 import "gorm.io/gorm"
 
-type PlaceInfo struct {
+type Place struct {
 	gorm.Model
 	Code               int    `gorm:"unique"`
 	PlaceName          string `gorm:"unique"`
@@ -11,5 +11,5 @@ type PlaceInfo struct {
 	North              float64
 	South              float64
 	West               float64
-	WeatherInformation []WeatherInfo `gorm:"foreignKey:PlaceInfoId"`
+	WeatherInformation []Weather `gorm:"foreignKey:PlaceInfoId"`
 }

@@ -2,7 +2,7 @@ package entity
 
 import "gorm.io/gorm"
 
-type WeatherInfo struct {
+type Weather struct {
 	gorm.Model
 	PlaceInfoId      int
 	Lng              float64

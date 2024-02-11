@@ -1,15 +1,16 @@
 package dal
 
 import (
-	entity2 "WeatherInfoScheduler/data/entity"
-	repository2 "WeatherInfoScheduler/data/repository"
+	"WeatherInfoScheduler/data/entity"
+	"WeatherInfoScheduler/data/repository"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 type WeatherInfoHelper struct {
-	wr *repository2.WeatherInfoRepository
-	pr *repository2.PlaceInfoRepository
+	db *gorm.DB
+	wr *repository.WeatherRepository
+	pr *repository.PlaceRepository
 }
 
 func initDb() (*gorm.DB, error) {
@@ -19,12 +20,12 @@ func initDb() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	err = db.AutoMigrate(&entity2.PlaceInfo{})
+	err = db.AutoMigrate(&entity.Place{})
 	if err != nil {
 		return nil, err
 	}
 
-	err = db.AutoMigrate(&entity2.WeatherInfo{})
+	err = db.AutoMigrate(&entity.Weather{})
 	if err != nil {
 		return nil, err
 	}
@@ -39,19 +40,31 @@ func NewWeatherInfoHelper() (*WeatherInfoHelper, error) {
 		return nil, err
 	}
 
-	return &WeatherInfoHelper{repository2.NewWeatherInfoRepository(db), repository2.NewPlaceInfoRepository(db)}, nil
+	return &WeatherInfoHelper{db, repository.NewWeatherRepository(db), repository.NewPlaceRepository(db)}, nil
 }
 
-func (wh *WeatherInfoHelper) SavePlaceInfo(placeInfo *entity2.PlaceInfo) error {
+func (wh *WeatherInfoHelper) DeleteWeather(weatherInfo *entity.Weather) error {
+	return wh.wr.Delete(weatherInfo)
+}
+
+func (wh *WeatherInfoHelper) FindPlaceByPlaceName(placeName string) (*entity.Place, error) {
+	return wh.pr.FindByPlaceName(placeName)
+}
+
+func (wh *WeatherInfoHelper) FindPlaceByCode(code int) (*entity.Place, error) {
+	return wh.pr.FindByCode(code)
+}
+
+func (wh *WeatherInfoHelper) SavePlace(placeInfo *entity.Place) error {
 	return wh.pr.Save(placeInfo)
 }
 
-func (wh *WeatherInfoHelper) SaveWeatherInfo(weatherInfo *entity2.WeatherInfo) error {
+func (wh *WeatherInfoHelper) SaveWeather(weatherInfo *entity.Weather) error {
 	return wh.wr.Save(weatherInfo)
 }
 
-func (wh *WeatherInfoHelper) DeleteWeatherInfo(weatherInfo *entity2.WeatherInfo) error {
-	return wh.wr.Delete(weatherInfo)
+func (wh *WeatherInfoHelper) ExecNonQuery(sqlCmd string) error {
+	return wh.db.Exec(sqlCmd).Error
 }
 
 //...
