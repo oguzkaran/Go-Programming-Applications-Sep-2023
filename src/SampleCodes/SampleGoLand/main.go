@@ -1,42 +1,33 @@
+/*
+------------------------------------------------------------------------------------------------------------------------
+
+	Aşağıdaki demo örnekte yaratılan thread'leri stack alanları farklı olduğundan i döngü değişkeni de her thread için
+	ayrı olarak yaratılır
+
+------------------------------------------------------------------------------------------------------------------------
+*/
 package main
 
 import (
 	"fmt"
+	"time"
 )
 
-type NameType string
-
-type SensorInfo struct {
-	Name NameType
-	//...
+type Sample struct {
+	val int
 }
 
-type SensorEvent struct {
-	Sensor *SensorInfo
-	//...
-}
-
-func NewName() NameType {
-	return NameType("CSD Sensor") //Bu isim herhangi bir yerden elde edilebilir
-}
-
-func NewSensorInfo(name NameType) *SensorInfo {
-	return &SensorInfo{Name: name}
-}
-
-func (si *SensorInfo) GetName() NameType {
-	return si.Name
-}
-
-func NewSensorEvent(si *SensorInfo) *SensorEvent {
-	return &SensorEvent{Sensor: si}
-}
-
-func (e *SensorEvent) PrintName() {
-	fmt.Printf("Sensor Name:%s\n", e.Sensor.GetName())
+func goroutineCallback(count int, ps *Sample) {
+	for i := 0; i < count; i++ {
+		ps.val++
+	}
+	fmt.Println("goroutineCallback ends!...")
 }
 
 func main() {
-	e := InitSensorEvent()
-	e.PrintName()
+	s := Sample{}
+	go goroutineCallback(10_000_000, &s)
+	go goroutineCallback(10_000_000, &s)
+	time.Sleep(3 * time.Second)
+	fmt.Printf("value = %d\n", s.val)
 }
