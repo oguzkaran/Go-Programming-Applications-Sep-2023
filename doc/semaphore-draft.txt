@@ -1,0 +1,24 @@
+//Değişecek
+Semapohore senkronizasyon nesnesi bir kritik koda
+n tane akışın girebileceği sayaçlı bir senkronizayon nesnesidir. Eğer sayaç 1 ise özel olarak "binary semaphore" denir.
+Aslında binary semaphore mutex'in sahipliği devralan thread tarafından sahipliğin devredilmesi zorunluluğu olmadığı
+biçimidir. Semaphore tipik olarak semaphore paketinden kullanılabilir. semaphore paketinde NewWighted isimli fonksiyon
+ile bir semaphore yaratılabilir. Bu fonksiyon tipik olarak başlangıç sayaç bilgisini alır. Bu fonksiyon Weighted
+türünden bir yapı nesnesinin adresine geri döner. Kritik kodun başında Weighted yapısının Acquire metodu çağrılır.
+Kritik kodun sonunda ise Release metodu çağrılır. Acquire metodu semaphore sayacını aldığı parametrenin değeri kadar
+azaltır. Başka bir deyişle Acquire metodu ile parametresi ile aldığı n değeri kadar thread kritik koda girebilir. Tabii ki
+bu durumda semaphore sayacının en az bu girilen parametre kadar olması gerekir. Aksi durumda Acquire metodunun
+çağrıldığı thread bloke olur. Release metodu semaphore sayacını parametresi ile aldığı değer kadar artırır. Yani
+özetle kriti koda girmek isteyen thread için semaphore sayacının sıfırdan büyük olması gerekir. Eğer sayaç sıfırsa
+kritik koda girmek isteyen thread'ler bloke olur.
+
+Anahtar Notlar: Semaphore kullanmak için Context türünden bir nesnenin adresi gerekir. Context yapısı ve context
+kavramı ileride ele alınacaktır
+
+Bu problemin genel algoritması şöyledir: Tipik olarak iki tane semaphore nesnesi yaratılır: producer, consumer.
+Üretici thread eğer tek bir değişkene yazıyorsa akışın tekrar gelmesi durumunda eski değerin tüketilmeden ezilmemesi
+için kendi semaphore sayacını azaltır. Üretim işlemi bittikten sonra tüketicinin semaphore sayacını 1 artırır. Tüketici de
+kritik koda girdiğinde tekrar aynı değeri almamak için kendi semaphore sayacını 1 azaltır. Tüketme işlemi bittikten
+sonra üreticinin semaphore sayacını 1 artırır. 1 üreticili ve 1 tüketicili problem tipik olarak binary semaphore ile
+çözülebilir. Aslında genel algoritma açısından üretici ve sayısının önemi yoktur ancak ince noktalarda değişiklikler
+yapılır.

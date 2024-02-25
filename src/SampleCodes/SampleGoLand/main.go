@@ -1,59 +1,59 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Aşağıdaki demo örnekteki calculateCounter fonksiyonunda return deyiminden önce UnLock yapılmazsa deadlock oluşur. Go
-	runtime goroutine'ler için deadlock durumlarını yakalar ve panic fonksiyonu çağrılır
+	Yukarıdaki problem aşağıdaki gibi channel kullanarak çözülebilir
 
 ------------------------------------------------------------------------------------------------------------------------
 */
 package main
 
 import (
-	"SampleGoLand/csd/console"
 	"fmt"
-	"math/rand"
 	"sync"
+	"time"
 )
 
-type Counter struct {
-	value int32
-	total int64
-}
+var value = make(chan int)
 
-func calculateCounter(counter *Counter, mutex *sync.Mutex) {
-	mutex.Lock()
-	var value = int32(rand.Intn(20) - 10)
+func producerGoroutineCallback(wg *sync.WaitGroup) {
+	defer wg.Done()
 
-	mutex.Lock()
-	counter.value += value
-	counter.total += int64(counter.value)
-	mutex.Unlock()
-	mutex.Unlock()
-}
+	val := 0
 
-func goroutineCallback(n int, counter *Counter, wg *sync.WaitGroup, mutex *sync.Mutex) {
-	for i := 0; i < n; i++ {
-		calculateCounter(counter, mutex)
+	for {
+		value <- val
+		val++
+		if val >= 99 {
+			break
+		}
+		time.Sleep(100 * time.Millisecond)
 	}
 
-	wg.Done()
+	close(value)
+}
+
+func consumerGoroutineCallback(wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	for {
+		val := <-value
+		fmt.Printf("%d ", val)
+
+		if val >= 98 {
+			break
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+
+	fmt.Println()
 }
 
 func main() {
 	var wg sync.WaitGroup
-	var mutex sync.Mutex
+	wg.Add(2)
 
-	count := console.ReadInt("Input count:", "")
-	n := console.ReadInt("Input number of goroutines:", "")
-
-	counter := Counter{}
-	for i := 0; i < n; i++ {
-		wg.Add(1)
-		go goroutineCallback(count, &counter, &wg, &mutex)
-	}
+	go producerGoroutineCallback(&wg)
+	go consumerGoroutineCallback(&wg)
 
 	wg.Wait()
-
-	fmt.Printf("Value:%d\n", counter.value)
-	fmt.Printf("Total:%d\n", counter.total)
 }
