@@ -15,8 +15,10 @@ for count
 package app
 
 import (
+	"Server/csd/str"
 	"encoding/binary"
 	"fmt"
+	"math/rand"
 	"net"
 	"os"
 )
@@ -39,6 +41,10 @@ func checkError(err error) {
 }
 
 func handleClient(socket net.Conn) {
+	defer func() {
+		_ = socket.Close()
+	}()
+
 	fmt.Printf("Client connected:%v\n", socket.RemoteAddr())
 
 	countBuf := make([]byte, 8)
@@ -74,9 +80,20 @@ func handleClient(socket net.Conn) {
 
 	fmt.Printf("Count:%d, Origin:%d, Bound:%d\n", count, origin, bound)
 
-	_, _ = socket.Write([]byte{1})
+	_, err = socket.Write([]byte{1})
+	if err != nil {
+		return
+	}
 
-	_ = socket.Close()
+	for i := uint64(0); i < count; i++ {
+		text := str.GenerateRandomTextEN(rand.Intn(int(bound) - int(origin) + int(origin)))
+
+		n, err := socket.Write([]byte("ali"))
+		fmt.Printf("length of %s is %d, number of written data:%d\n", text, len(text), n)
+		if err != nil {
+			return
+		}
+	}
 }
 
 func Run() {
