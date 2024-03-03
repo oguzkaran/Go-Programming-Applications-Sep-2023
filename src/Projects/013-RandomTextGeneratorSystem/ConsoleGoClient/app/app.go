@@ -34,8 +34,8 @@ func Run() {
 
 	socket, err := net.DialTCP("tcp", nil, tcpAddr)
 	checkError(err)
-
-	//defer checkError(socket.Close())
+	
+	defer checkError(socket.Close())
 
 	countBuf := make([]byte, 8)
 	originBuf := make([]byte, 4)
