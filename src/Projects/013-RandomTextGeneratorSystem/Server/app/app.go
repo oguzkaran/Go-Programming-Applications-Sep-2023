@@ -21,6 +21,7 @@ import (
 	"math/rand"
 	"net"
 	"os"
+	"time"
 )
 
 func checkLengthEquals(len, argsLen int, message string) {
@@ -41,7 +42,9 @@ func checkError(err error) {
 }
 
 func handleClient(socket net.Conn) {
+	socket.SetReadDeadline(time.Now())
 	defer func() {
+		fmt.Println("close")
 		_ = socket.Close()
 	}()
 
@@ -88,7 +91,7 @@ func handleClient(socket net.Conn) {
 	for i := uint64(0); i < count; i++ {
 		text := str.GenerateRandomTextEN(rand.Intn(int(bound) - int(origin) + int(origin)))
 
-		n, err := socket.Write([]byte("ali"))
+		n, err := socket.Write([]byte(text))
 		fmt.Printf("length of %s is %d, number of written data:%d\n", text, len(text), n)
 		if err != nil {
 			return
