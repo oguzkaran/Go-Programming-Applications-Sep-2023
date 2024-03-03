@@ -1,10 +1,11 @@
 package app
 
 import (
+	"Server/console"
+	"encoding/binary"
 	"fmt"
 	"net"
 	"os"
-	"time"
 )
 
 func checkLengthEquals(len, argsLen int, message string) {
@@ -34,13 +35,33 @@ func Run() {
 	socket, err := net.DialTCP("tcp", nil, tcpAddr)
 	checkError(err)
 
-	var buf [1024]byte
+	countBuf := make([]byte, 8)
+	originBuf := make([]byte, 4)
+	boundBuf := make([]byte, 4)
 
-	n, err := socket.Read(buf[0:])
-	checkError(err)
-	fmt.Println(string(buf[0:n]))
+	count := uint64(console.ReadInt("Input count:", ""))
+	origin := uint32(console.ReadInt("Input origin:", ""))
+	bound := uint32(console.ReadInt("Input bound:", ""))
 
-	_, err = socket.Write([]byte(fmt.Sprintf("My Time:%s", time.Now().String())))
+	binary.NativeEndian.PutUint64(countBuf, count)
+	binary.NativeEndian.PutUint32(originBuf, origin)
+	binary.NativeEndian.PutUint32(boundBuf, bound)
+
+	_, err = socket.Write(countBuf)
 	checkError(err)
+	_, err = socket.Write(originBuf)
+	checkError(err)
+	_, err = socket.Write(boundBuf)
+	checkError(err)
+	status := make([]byte, 1)
+	_, err = socket.Read(status)
+	checkError(err)
+
+	if status[0] == 1 {
+		fmt.Println("Success")
+	} else {
+		fmt.Println("Fail")
+	}
+
 	checkError(socket.Close())
 }

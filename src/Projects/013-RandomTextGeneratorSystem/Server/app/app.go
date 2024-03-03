@@ -1,10 +1,24 @@
+/*
+Client -> Server
+count -> uint64
+origin -> uint32
+bound -> uin32
+
+Server -> Client
+success -> 0 ya da 1
+
+if success
+for count
+
+	send random text
+*/
 package app
 
 import (
+	"encoding/binary"
 	"fmt"
 	"net"
 	"os"
-	"time"
 )
 
 func checkLengthEquals(len, argsLen int, message string) {
@@ -26,15 +40,43 @@ func checkError(err error) {
 
 func handleClient(socket net.Conn) {
 	fmt.Printf("Client connected:%v\n", socket.RemoteAddr())
-	nowStr := fmt.Sprintf("%s\r\n", time.Now().String())
-	_, err := socket.Write([]byte(nowStr))
-	checkError(err)
-	var buf [1024]byte
-	n, err := socket.Read(buf[0:])
-	checkError(err)
-	fmt.Printf("Client time:%s\n", string(buf[0:n]))
 
-	checkError(socket.Close())
+	countBuf := make([]byte, 8)
+	originBuf := make([]byte, 4)
+	boundBuf := make([]byte, 4)
+
+	n, err := socket.Read(countBuf)
+
+	if err != nil || n != len(countBuf) {
+		_, _ = socket.Write([]byte{0})
+		return
+	}
+	n, err = socket.Read(originBuf)
+
+	if err != nil || n != len(originBuf) {
+		_, _ = socket.Write([]byte{0})
+		return
+	}
+
+	n, err = socket.Read(boundBuf)
+
+	if err != nil || n != len(boundBuf) {
+		_, _ = socket.Write([]byte{0})
+		return
+	}
+	var count uint64
+	var origin uint32
+	var bound uint32
+
+	count = binary.NativeEndian.Uint64(countBuf)
+	origin = binary.NativeEndian.Uint32(originBuf)
+	bound = binary.NativeEndian.Uint32(boundBuf)
+
+	fmt.Printf("Count:%d, Origin:%d, Bound:%d\n", count, origin, bound)
+
+	_, _ = socket.Write([]byte{1})
+
+	_ = socket.Close()
 }
 
 func Run() {
@@ -46,7 +88,7 @@ func Run() {
 
 	serverSocket, err := net.ListenTCP("tcp", tcpAddr)
 
-	fmt.Printf("Date Time Server is waiting for a client on port :%s\n", os.Args[1])
+	fmt.Printf("RandomTextGeneratorServer is waiting for a client on port :%s\n", os.Args[1])
 	for {
 		socket, err := serverSocket.Accept()
 
