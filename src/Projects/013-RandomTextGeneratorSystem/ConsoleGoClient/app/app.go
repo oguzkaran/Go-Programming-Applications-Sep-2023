@@ -35,6 +35,8 @@ func Run() {
 	socket, err := net.DialTCP("tcp", nil, tcpAddr)
 	checkError(err)
 
+	//defer checkError(socket.Close())
+
 	countBuf := make([]byte, 8)
 	originBuf := make([]byte, 4)
 	boundBuf := make([]byte, 4)
@@ -59,9 +61,13 @@ func Run() {
 
 	if status[0] == 1 {
 		fmt.Println("Success")
+		buf := make([]byte, bound-1)
+		for i := uint64(0); i < count; i++ {
+			n, _ := socket.Read(buf)
+			text := string(buf[:n])
+			fmt.Printf("%d -> %s\n", n, text)
+		}
 	} else {
 		fmt.Println("Fail")
 	}
-
-	checkError(socket.Close())
 }
