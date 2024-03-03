@@ -14,7 +14,7 @@ func checkLengthEquals(len, argsLen int, message string) {
 }
 
 func exitFailure(message string) {
-	fmt.Fprintf(os.Stderr, "%s\n", message)
+	_, _ = fmt.Fprintf(os.Stderr, "%s\n", message)
 	os.Exit(1)
 }
 
@@ -51,7 +51,7 @@ func Run() {
 		socket, err := serverSocket.Accept()
 
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+			_, _ = fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 			continue
 		}
 
