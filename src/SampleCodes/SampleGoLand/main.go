@@ -1,59 +1,34 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Yukarıdaki problem aşağıdaki gibi channel kullanarak çözülebilir
+	10 -> 000A
+			L.E.	B.E.
+	1FC0 -> 0A		00
+	1FC1 -> 00		0A
 
 ------------------------------------------------------------------------------------------------------------------------
 */
 package main
 
 import (
+	"encoding/binary"
 	"fmt"
-	"sync"
-	"time"
 )
 
-var value = make(chan int)
+func main() {
+	var x uint64 = 0x000000000000000A
 
-func producerGoroutineCallback(wg *sync.WaitGroup) {
-	defer wg.Done()
-
-	val := 0
-
-	for {
-		value <- val
-		val++
-		if val >= 99 {
-			break
-		}
-		time.Sleep(100 * time.Millisecond)
-	}
-
-	close(value)
-}
-
-func consumerGoroutineCallback(wg *sync.WaitGroup) {
-	defer wg.Done()
-
-	for {
-		val := <-value
-		fmt.Printf("%d ", val)
-
-		if val >= 98 {
-			break
-		}
-		time.Sleep(100 * time.Millisecond)
+	buf := make([]byte, 8)
+	binary.NativeEndian.PutUint64(buf, x)
+	for _, b := range buf {
+		fmt.Printf("%X ", b)
 	}
 
 	fmt.Println()
-}
+	val := binary.NativeEndian.Uint64(buf)
 
-func main() {
-	var wg sync.WaitGroup
-	wg.Add(2)
+	fmt.Printf("val = %X, val = %d\n", val, val)
+	fmt.Printf("x = %X, x = %d\n", x, x)
 
-	go producerGoroutineCallback(&wg)
-	go consumerGoroutineCallback(&wg)
-
-	wg.Wait()
+	fmt.Println()
 }
