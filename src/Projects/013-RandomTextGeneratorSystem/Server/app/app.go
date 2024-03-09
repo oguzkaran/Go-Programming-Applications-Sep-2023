@@ -21,7 +21,6 @@ import (
 	"math/rand"
 	"net"
 	"os"
-	"time"
 )
 
 func checkLengthEquals(len, argsLen int, message string) {
@@ -41,13 +40,48 @@ func checkError(err error) {
 	}
 }
 
-func handleClient(socket net.Conn) {
-	socket.SetReadDeadline(time.Now())
-	defer func() {
-		fmt.Println("close")
-		_ = socket.Close()
-	}()
+func send(conn net.Conn, buf []byte) (int, error) {
+	count := len(buf)
+	for {
+		n, err := conn.Write(buf)
+		if err != nil {
+			return 0, err
+		}
+		count -= n
+		if count == 0 {
+			break
+		}
+	}
 
+	return len(buf), nil
+}
+
+func receive(conn net.Conn, buf []byte) (int, error) {
+	size := len(buf)
+	count := 0
+	data := make([]byte, size)
+
+	for {
+		n, err := conn.Read(data)
+		if err != nil {
+			return 0, err
+		}
+
+		for i := 0; i < len(data); i++ {
+			buf[i+count] = data[i]
+		}
+		count += n
+
+		if count == size {
+			break
+		}
+	}
+
+	return count, nil
+}
+
+func handleClient(socket net.Conn) {
+	defer socket.Close()
 	fmt.Printf("Client connected:%v\n", socket.RemoteAddr())
 
 	countBuf := make([]byte, 8)
@@ -88,10 +122,13 @@ func handleClient(socket net.Conn) {
 		return
 	}
 
+	dataLen := make([]byte, 4)
 	for i := uint64(0); i < count; i++ {
-		text := str.GenerateRandomTextEN(rand.Intn(int(bound) - int(origin) + int(origin)))
+		text := str.GenerateRandomTextEN(rand.Intn(int(bound)-int(origin)) + int(origin))
 
-		n, err := socket.Write([]byte(text))
+		binary.NativeEndian.PutUint32(dataLen, uint32(len(text)))
+		n, err := socket.Write(dataLen)
+		n, err = socket.Write([]byte(text))
 		fmt.Printf("length of %s is %d, number of written data:%d\n", text, len(text), n)
 		if err != nil {
 			return

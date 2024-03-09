@@ -25,6 +25,46 @@ func checkError(err error) {
 	}
 }
 
+func send(conn net.Conn, buf []byte) (int, error) {
+	count := len(buf)
+	for {
+		n, err := conn.Write(buf)
+		if err != nil {
+			return 0, err
+		}
+		count -= n
+		if count == 0 {
+			break
+		}
+	}
+
+	return len(buf), nil
+}
+
+func receive(conn net.Conn, buf []byte) (int, error) {
+	size := len(buf)
+	count := 0
+	data := make([]byte, size)
+
+	for {
+		n, err := conn.Read(data)
+		if err != nil {
+			return 0, err
+		}
+
+		for i := 0; i < len(data); i++ {
+			buf[i+count] = data[i]
+		}
+		count += n
+
+		if count == size {
+			break
+		}
+	}
+
+	return len(buf), nil
+}
+
 func Run() {
 	checkLengthEquals(3, len(os.Args), "usage: ./client <host> <port number>")
 
@@ -34,8 +74,6 @@ func Run() {
 
 	socket, err := net.DialTCP("tcp", nil, tcpAddr)
 	checkError(err)
-	
-	defer checkError(socket.Close())
 
 	countBuf := make([]byte, 8)
 	originBuf := make([]byte, 4)
@@ -59,12 +97,15 @@ func Run() {
 	_, err = socket.Read(status)
 	checkError(err)
 
+	dataLen := make([]byte, 4)
+
 	if status[0] == 1 {
 		fmt.Println("Success")
-		buf := make([]byte, bound-1)
 		for i := uint64(0); i < count; i++ {
+			_, _ = socket.Read(dataLen)
+			buf := make([]byte, binary.NativeEndian.Uint32(dataLen))
 			n, _ := socket.Read(buf)
-			text := string(buf[:n])
+			text := string(buf)
 			fmt.Printf("%d -> %s\n", n, text)
 		}
 	} else {
