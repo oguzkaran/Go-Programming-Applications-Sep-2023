@@ -1,34 +1,49 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	10 -> 000A
-			L.E.	B.E.
-	1FC0 -> 0A		00
-	1FC1 -> 00		0A
+	Aşağıdaki demo örneği inceleyiniz
 
 ------------------------------------------------------------------------------------------------------------------------
 */
 package main
 
 import (
-	"encoding/binary"
 	"fmt"
+	"golang.org/x/mod/modfile"
+	"os"
 )
 
-func main() {
-	var x uint64 = 0x000000000000000A
+func printFileInformation(de os.DirEntry) {
+	fi, err := de.Info()
+	if err == nil {
+		if fi.IsDir() {
+			fmt.Printf("%s <DIR>\n", fi.Name())
+		} else {
+			fmt.Printf("%s %d\n", fi.Name(), fi.Size())
+		}
 
-	buf := make([]byte, 8)
-	binary.NativeEndian.PutUint64(buf, x)
-	for _, b := range buf {
-		fmt.Printf("%X ", b)
+	} else {
+		fmt.Printf("Error:%s\n", err.Error())
 	}
 
-	fmt.Println()
-	val := binary.NativeEndian.Uint64(buf)
+}
 
-	fmt.Printf("val = %X, val = %d\n", val, val)
-	fmt.Printf("x = %X, x = %d\n", x, x)
+func main() {
+	if len(os.Args) != 2 {
+		_, _ = fmt.Fprintf(os.Stderr, "Wrong number of arguments!...\n")
+		os.Exit(1)
+	}
 
-	fmt.Println()
+	if modfile.IsDirectoryPath(os.Args[1]) {
+		entries, err := os.ReadDir(os.Args[1])
+		if err == nil {
+			for _, de := range entries {
+				printFileInformation(de)
+			}
+		} else {
+			_, _ = fmt.Fprintf(os.Stderr, "ReadDir:%s\n", err.Error())
+		}
+	} else {
+		fmt.Println("Is not a directory")
+	}
 }
