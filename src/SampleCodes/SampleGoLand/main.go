@@ -1,49 +1,61 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Aşağıdaki demo örneği inceleyiniz
+	Aşağıdaki örnekte blok blok dosya kopyalaması yapılmıştır. Burada blok uzunluğu kullanıcı tarafından belirlenmiştir
 
 ------------------------------------------------------------------------------------------------------------------------
 */
 package main
 
 import (
-	"fmt"
-	"golang.org/x/mod/modfile"
+	"SampleGoLand/csd/err"
+	"io"
 	"os"
+	"strconv"
 )
 
-func printFileInformation(de os.DirEntry) {
-	fi, err := de.Info()
-	if err == nil {
-		if fi.IsDir() {
-			fmt.Printf("%s <DIR>\n", fi.Name())
-		} else {
-			fmt.Printf("%s %d\n", fi.Name(), fi.Size())
-		}
-
-	} else {
-		fmt.Printf("Error:%s\n", err.Error())
-	}
-
-}
-
 func main() {
-	if len(os.Args) != 2 {
-		_, _ = fmt.Fprintf(os.Stderr, "Wrong number of arguments!...\n")
-		os.Exit(1)
+	if len(os.Args) != 4 {
+		err.ExitFailure("usage:csd_copy <src path> <dest path> <block size>")
 	}
 
-	if modfile.IsDirectoryPath(os.Args[1]) {
-		entries, err := os.ReadDir(os.Args[1])
-		if err == nil {
-			for _, de := range entries {
-				printFileInformation(de)
-			}
-		} else {
-			_, _ = fmt.Fprintf(os.Stderr, "ReadDir:%s\n", err.Error())
+	size, e := strconv.Atoi(os.Args[3])
+
+	if e != nil {
+		err.ExitFailure("Invalid block size")
+	}
+
+	fs, e := os.OpenFile(os.Args[1], os.O_RDONLY, 0)
+
+	if e != nil {
+		err.ExitFailureError("OpenFile", e)
+	}
+
+	fd, e := os.OpenFile(os.Args[2], os.O_CREATE|os.O_WRONLY, 0777)
+
+	if e != nil {
+		err.ExitFailureError("OpenFile", e)
+	}
+
+	data := make([]byte, size)
+	for {
+		n, e := fs.Read(data)
+
+		if e != nil && e != io.EOF {
+			err.ExitFailureError("Read", e)
 		}
-	} else {
-		fmt.Println("Is not a directory")
+
+		if n == 0 {
+			break
+		}
+
+		writeData := make([]byte, n)
+		copy(writeData, data)
+
+		_, e = fd.Write(writeData)
+
+		if e != nil {
+			err.ExitFailureError("Write", e)
+		}
 	}
 }
