@@ -1,14 +1,14 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Aşağıdaki demo örnekte text bir dosya karakter karakter okunup stdout'a bastırılmıştır
+	Aşağıdaki demo örnekte text bir dosyadan karakter karakter okuma yapılmış ve stdout'a bastırılmıştır
 
 ------------------------------------------------------------------------------------------------------------------------
 */
 package main
 
 import (
-	"SampleGoLand/csd/err"
+	"016-PrintFileApp/csd/err"
 	"bufio"
 	"fmt"
 	"io"
@@ -17,7 +17,7 @@ import (
 
 func main() {
 	if len(os.Args) != 2 {
-		err.ExitFailure("wrong number of arguments!...")
+		err.ExitFailure("usage: csd_cat <file path>")
 	}
 
 	f, e := os.Open(os.Args[1])
@@ -40,7 +40,8 @@ func main() {
 		if e != nil {
 			err.ExitFailureError("ReadString", e)
 		}
-
-		fmt.Print(line)
+		for _, c := range line {
+			fmt.Print(string(c))
+		}
 	}
 }
