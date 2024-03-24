@@ -1,7 +1,9 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Aşağıdaki demo örnekte text bir dosya karakter karakter okunup stdout'a bastırılmıştır
+	Aşağıdaki demo örnekte https://en.wikipedia.org/wiki/BMP_file_format linkinde bulunan basit bmp resim dosyasının
+	bazı bilgileri okunmaktadır. Geçerlilik kontrolü gibi detaylar göz ardı edilmiştir. Burada dosya formatında yapılan
+	işlemlere odaklanınız
 
 ------------------------------------------------------------------------------------------------------------------------
 */
@@ -9,7 +11,7 @@ package main
 
 import (
 	"SampleGoLand/csd/err"
-	"bufio"
+	"encoding/binary"
 	"fmt"
 	"io"
 	"os"
@@ -28,19 +30,27 @@ func main() {
 
 	defer func() { _ = f.Close() }()
 
-	reader := bufio.NewReader(f)
+	var width int32
+	var height int32
 
-	for {
-		line, e := reader.ReadString('\n')
-
-		if e == io.EOF {
-			break
-		}
-
-		if e != nil {
-			err.ExitFailureError("ReadString", e)
-		}
-
-		fmt.Print(line)
+	_, e = f.Seek(18, io.SeekStart)
+	if e != nil {
+		err.ExitFailureError("Seek", e)
 	}
+
+	e = binary.Read(f, binary.LittleEndian, &width)
+	if e != nil {
+		err.ExitFailureError("Read", e)
+	}
+
+	if e != nil {
+		err.ExitFailureError("Seek", e)
+	}
+
+	e = binary.Read(f, binary.LittleEndian, &height)
+	if e != nil {
+		err.ExitFailureError("Read", e)
+	}
+
+	fmt.Printf("Width = %d, Height = %d\n", width, height)
 }
