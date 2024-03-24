@@ -22,7 +22,7 @@ func main() {
 	size, e := strconv.Atoi(os.Args[3])
 
 	if e != nil {
-		err.ExitFailure("Invalid block size")
+		err.ExitFailure("invalid block size!...")
 	}
 
 	fs, e := os.OpenFile(os.Args[1], os.O_RDONLY, 0)
@@ -38,6 +38,7 @@ func main() {
 	}
 
 	data := make([]byte, size)
+
 	for {
 		n, e := fs.Read(data)
 
