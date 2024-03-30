@@ -1,19 +1,3 @@
-/*
-------------------------------------------------------------------------------------------------------------------------
-   Sınıf Çalışması: Komut satırından aşağıdaki gibi çalışan programı yazınız
-        ./csd_cf <block size> <file1> <file2> ... <fileN> <dest_path>
-
-    - Program file1, file2, file3, ..., fileN ile belirtilen dosyaları birleştirerek dest ile belirtilen dosyaya
-    ekleyecektir
-
-    - Dosyalar komut satırından alınan block_size uzunluğu kadar okunacaktır
-
-    - Program olmayan kaynak dosyalar için uygun mesajı verecek, akışına devam edecektir
-
-    - Hedef dosya varsa üzerine yazılacaktır (overwrite)
-------------------------------------------------------------------------------------------------------------------------
-*/
-
 package main
 
 import (
@@ -57,6 +41,8 @@ func concatFiles(fd *os.File, blockSize int) {
 
 		if e != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "Can not open file:%s\n", os.Args[i])
+			_ = os.Remove(fd.Name())
+			break
 		}
 		e = copyFile(fd, fs, buf)
 
