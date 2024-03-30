@@ -57,7 +57,6 @@ func concatFiles(fd *os.File, blockSize int) {
 
 		if e != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "Can not open file:%s\n", os.Args[i])
-			continue
 		}
 		e = copyFile(fd, fs, buf)
 
