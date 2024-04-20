@@ -1,19 +1,9 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Sınıf Çalışması: Aşağıdaki JSON formatına ve açıklamalaro göre ilgili programı yazınız
-		{"n":10, "min":10, "max":20, "count":30, "basePath":"numbers"}
-	Açıklamalar:
-		- JSON formatı stdin'den alınacaktır
-		- JSON formatında bulunan değerlere ilişkin bilgiler şunlardır:
-			n: goroutine sayısı
-			min:rassal sayının alt sınır
-			max: rassal sayının üst sınırı
-			count:Rassal sayıların adedi
-			basePath: Taban dosya ismi
-		Buna göre her bir goroutine ilgili dosyaya ilgili sayıları yazdıracaktır. basFilePath değeri numbers ve n değeri 2
-		goroutine'lere ilişkin dosya isimleri şu şekilde olacaktır: numbers-1, numbers-2, numbers-3
+	Sınıf Çalışması: Yukarıdaki uygulamayı TCP kullanarak yazınız
 
+	~/src/Projects/028-RandomGeneratorSystem uygulamasını inceleyiniz
 ------------------------------------------------------------------------------------------------------------------------
 */
 
