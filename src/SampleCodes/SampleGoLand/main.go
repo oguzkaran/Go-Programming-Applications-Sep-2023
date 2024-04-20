@@ -1,56 +1,47 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Aşağıdaki demo örnekte https://en.wikipedia.org/wiki/BMP_file_format linkinde bulunan basit bmp resim dosyasının
-	bazı bilgileri okunmaktadır. Geçerlilik kontrolü gibi detaylar göz ardı edilmiştir. Burada dosya formatında yapılan
-	işlemlere odaklanınız
+	Aşağıdaki demo örnekte marshalling yapılmıştır
 
 ------------------------------------------------------------------------------------------------------------------------
 */
 package main
 
 import (
-	"SampleGoLand/csd/err"
-	"encoding/binary"
+	"SampleGoLand/csd/console"
+	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 )
 
+type User struct {
+	Username string `json:"username"`
+	Password string `json:"-"` //transient
+	Name     string `json:"name"`
+}
+
+func NewUser(username, password, name string) *User {
+	return &User{Username: username, Password: password, Name: name}
+}
+
 func main() {
-	if len(os.Args) != 2 {
-		err.ExitFailure("wrong number of arguments!...")
+	for {
+		username := console.ReadString("Input username:")
+
+		if username == "" {
+			break
+		}
+
+		password := console.ReadString("Input password:")
+		name := console.ReadString("Input name:")
+		user := NewUser(username, password, name)
+
+		d, e := json.Marshal(&user)
+
+		if e != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "problem occurred:%s\n", e.Error())
+		} else {
+			fmt.Printf("Data:%s\n", d)
+		}
 	}
-
-	f, e := os.Open(os.Args[1])
-
-	if e != nil {
-		err.ExitFailureError("Open:", e)
-	}
-
-	defer func() { _ = f.Close() }()
-
-	var width int32
-	var height int32
-
-	_, e = f.Seek(18, io.SeekStart)
-	if e != nil {
-		err.ExitFailureError("Seek", e)
-	}
-
-	e = binary.Read(f, binary.LittleEndian, &width)
-	if e != nil {
-		err.ExitFailureError("Read", e)
-	}
-
-	if e != nil {
-		err.ExitFailureError("Seek", e)
-	}
-
-	e = binary.Read(f, binary.LittleEndian, &height)
-	if e != nil {
-		err.ExitFailureError("Read", e)
-	}
-
-	fmt.Printf("Width = %d, Height = %d\n", width, height)
 }

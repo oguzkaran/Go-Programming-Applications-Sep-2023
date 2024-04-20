@@ -89,10 +89,6 @@ func timeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	_, err = fmt.Fprintf(w, "%s", string(data))
-
-	if !checkError(err, w, "Internal server error!...", http.StatusInternalServerError) {
-		return
-	}
 }
 
 func dateHandler(w http.ResponseWriter, r *http.Request) {
@@ -114,9 +110,6 @@ func dateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	_, err = fmt.Fprintf(w, "%s", string(data))
 
-	if !checkError(err, w, "Internal server error!...", http.StatusInternalServerError) {
-		return
-	}
 }
 
 func birthDateHandler(w http.ResponseWriter, r *http.Request) {
