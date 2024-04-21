@@ -27,7 +27,7 @@ func timeClientCallback(name, server string) (int, string) {
 	}
 
 	client := http.Client{Timeout: 20 * time.Second}
-	res, err := client.Do(req) //Response'un kapatılması gerekir. İleride defer function'lar yapacağız
+	res, err := client.Do(req)
 
 	defer res.Body.Close()
 
