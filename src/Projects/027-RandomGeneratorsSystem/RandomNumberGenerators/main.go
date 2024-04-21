@@ -15,7 +15,7 @@ import (
 func writeToFile(info *jsondata.Info, i int, wg *sync.WaitGroup) {
 	minVal := info.Min
 	maxVal := info.Max
-	count := info.Count
+	n := info.N
 	path := fmt.Sprintf("%s-%d", info.BasePath, i+1)
 	f, e := os.OpenFile(path, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0777)
 
@@ -25,8 +25,8 @@ func writeToFile(info *jsondata.Info, i int, wg *sync.WaitGroup) {
 
 	defer func() { _ = f.Close() }()
 
-	for i := 0; i < count; i++ {
-		var val int32 = int32(rand.Intn(maxVal-minVal+1) + minVal)
+	for i := 0; i < n; i++ {
+		val := int32(rand.Intn(maxVal-minVal+1) + minVal)
 
 		e = binary.Write(f, binary.LittleEndian, &val)
 		if e != nil {

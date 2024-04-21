@@ -1,10 +1,12 @@
+// {"n":10000, "min":10, "max":20, "count":30, "basePath":"texts/text.txt"}
 package main
 
 import (
-	"RandomNumberGenerators/csd/console"
-	"RandomNumberGenerators/csd/err"
-	"RandomNumberGenerators/jsondata"
-	"encoding/binary"
+	"RandomTextsGenerators/csd/console"
+	"RandomTextsGenerators/csd/err"
+	"RandomTextsGenerators/csd/util/str"
+	"RandomTextsGenerators/jsondata"
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"math/rand"
@@ -25,15 +27,17 @@ func writeToFile(info *jsondata.Info, i int, wg *sync.WaitGroup) {
 
 	defer func() { _ = f.Close() }()
 
-	for i := 0; i < n; i++ {
-		val := int32(rand.Intn(maxVal-minVal+1) + minVal)
+	writer := bufio.NewWriter(f)
 
-		e = binary.Write(f, binary.LittleEndian, &val)
+	for i := 0; i < n; i++ {
+		text := str.GenerateRandomTextEN(rand.Intn(maxVal-minVal+1) + minVal)
+		_, e = writer.WriteString(fmt.Sprintf("%s\r\n", text))
 		if e != nil {
 			err.ExitFailureError("Write", e)
 		}
 	}
 
+	writer.Flush()
 	wg.Done()
 }
 

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/025-RandomTextsGenerators.iml" filepath="$PROJECT_DIR$/.idea/025-RandomTextsGenerators.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/RandomInfoGeneratorService.iml" filepath="$PROJECT_DIR$/.idea/RandomInfoGeneratorService.iml" />
     </modules>
   </component>
 </project>
