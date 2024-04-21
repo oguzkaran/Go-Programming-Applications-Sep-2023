@@ -19,7 +19,7 @@ func checkArguments() {
 	}
 }
 
-func timeClientCallback(name, server string) (int, string) {
+func timeClient(name, server string) (int, string) {
 	req, err := http.NewRequest("GET", server+"/time?name="+name, nil)
 	if err != nil {
 		fmt.Printf("Error in request:%s", err.Error())
@@ -29,12 +29,12 @@ func timeClientCallback(name, server string) (int, string) {
 	client := http.Client{Timeout: 20 * time.Second}
 	res, err := client.Do(req)
 
-	defer res.Body.Close()
-
 	if err != nil {
 		fmt.Printf("Client error:%s", err.Error())
 		return http.StatusInternalServerError, ""
 	}
+
+	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
 		return res.StatusCode, ""
@@ -54,7 +54,7 @@ func Run() {
 	checkArguments()
 	server := os.Args[1]
 	fmt.Printf("Server:%s\n", server)
-	status, message := timeClientCallback("Deniz", server)
+	status, message := timeClient("Deniz", server)
 
 	if status == http.StatusOK {
 		fmt.Println(message)

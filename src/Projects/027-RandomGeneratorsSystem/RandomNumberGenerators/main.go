@@ -7,10 +7,44 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"io"
 	"math/rand"
+	"net/http"
 	"os"
 	"sync"
+	"time"
 )
+
+func infoClient(server string) (int, string) {
+	req, err := http.NewRequest("GET", server+"info/random", nil)
+	if err != nil {
+		fmt.Printf("Error in request:%s", err.Error())
+		return http.StatusInternalServerError, ""
+	}
+
+	client := http.Client{Timeout: 20 * time.Second}
+	res, err := client.Do(req)
+
+	if err != nil {
+		fmt.Printf("Client error:%s", err.Error())
+		return http.StatusInternalServerError, ""
+	}
+
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		return res.StatusCode, ""
+	}
+
+	data, err := io.ReadAll(res.Body)
+
+	if err != nil {
+		fmt.Printf("Data error:%s", err.Error())
+		return http.StatusInternalServerError, ""
+	}
+
+	return res.StatusCode, string(data)
+}
 
 func writeToFile(info *jsondata.Info, i int, wg *sync.WaitGroup) {
 	minVal := info.Min
@@ -49,21 +83,31 @@ func generateNumbers(info *jsondata.Info) {
 	wg.Wait()
 }
 
+func checkArguments() {
+	if len(os.Args) != 2 {
+		fmt.Printf("Wrong number of arguments!...")
+		os.Exit(1)
+	}
+}
+
 func main() {
+	checkArguments()
+	server := os.Args[1]
+	fmt.Printf("Server:%s\n", server)
 	info := jsondata.Info{}
 
 	for {
-		jsonStr := console.ReadString("Input config as JSON:")
-
-		if jsonStr == "" {
-			break
-		}
-
-		e := json.Unmarshal([]byte(jsonStr), &info)
-		if e == nil {
-			generateNumbers(&info)
+		_ = console.ReadString("Push enter to generate:")
+		status, jsonStr := infoClient(server)
+		if status == http.StatusOK {
+			e := json.Unmarshal([]byte(jsonStr), &info)
+			if e == nil {
+				generateNumbers(&info)
+			} else {
+				_, _ = fmt.Fprintf(os.Stderr, "internal problem occurred:%s\n", e.Error())
+			}
 		} else {
-			_, _ = fmt.Fprintf(os.Stderr, "internal problem occurred:%s\n", e.Error())
+			fmt.Printf("Status Code:%d\n", status)
 		}
 	}
 }
