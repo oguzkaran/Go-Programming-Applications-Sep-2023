@@ -16,30 +16,30 @@ import (
 )
 
 func infoClient(server string) (int, string) {
-	req, err := http.NewRequest("GET", server+"info/random", nil)
-	if err != nil {
-		fmt.Printf("Error in request:%s", err.Error())
+	req, e := http.NewRequest("GET", server+"/info/random", nil)
+	if e != nil {
+		fmt.Printf("Error in request:%s", e.Error())
 		return http.StatusInternalServerError, ""
 	}
 
 	client := http.Client{Timeout: 20 * time.Second}
-	res, err := client.Do(req)
+	res, e := client.Do(req)
 
-	if err != nil {
-		fmt.Printf("Client error:%s", err.Error())
+	if e != nil {
+		fmt.Printf("Client error:%s", e.Error())
 		return http.StatusInternalServerError, ""
 	}
 
-	defer res.Body.Close()
+	defer func() { _ = res.Body.Close() }()
 
 	if res.StatusCode != http.StatusOK {
 		return res.StatusCode, ""
 	}
 
-	data, err := io.ReadAll(res.Body)
+	data, e := io.ReadAll(res.Body)
 
-	if err != nil {
-		fmt.Printf("Data error:%s", err.Error())
+	if e != nil {
+		fmt.Printf("Data error:%s", e.Error())
 		return http.StatusInternalServerError, ""
 	}
 

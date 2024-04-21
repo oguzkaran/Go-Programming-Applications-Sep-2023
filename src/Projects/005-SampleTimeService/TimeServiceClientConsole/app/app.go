@@ -34,7 +34,7 @@ func timeClient(name, server string) (int, string) {
 		return http.StatusInternalServerError, ""
 	}
 
-	defer res.Body.Close()
+	defer func() { _ = res.Body.Close() }()
 
 	if res.StatusCode != http.StatusOK {
 		return res.StatusCode, ""

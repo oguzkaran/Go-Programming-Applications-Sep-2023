@@ -9,10 +9,44 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"math/rand"
+	"net/http"
 	"os"
 	"sync"
+	"time"
 )
+
+func infoClient(server string) (int, string) {
+	req, e := http.NewRequest("GET", server+"/info/random", nil)
+	if e != nil {
+		fmt.Printf("Error in request:%s", e.Error())
+		return http.StatusInternalServerError, ""
+	}
+
+	client := http.Client{Timeout: 20 * time.Second}
+	res, e := client.Do(req)
+
+	if e != nil {
+		fmt.Printf("Client error:%s", e.Error())
+		return http.StatusInternalServerError, ""
+	}
+
+	defer func() { _ = res.Body.Close() }()
+
+	if res.StatusCode != http.StatusOK {
+		return res.StatusCode, ""
+	}
+
+	data, e := io.ReadAll(res.Body)
+
+	if e != nil {
+		fmt.Printf("Data error:%s", e.Error())
+		return http.StatusInternalServerError, ""
+	}
+
+	return res.StatusCode, string(data)
+}
 
 func writeToFile(info *jsondata.Info, i int, wg *sync.WaitGroup) {
 	minVal := info.Min
@@ -37,11 +71,11 @@ func writeToFile(info *jsondata.Info, i int, wg *sync.WaitGroup) {
 		}
 	}
 
-	writer.Flush()
+	_ = writer.Flush()
 	wg.Done()
 }
 
-func generateNumbers(info *jsondata.Info) {
+func generateTexts(info *jsondata.Info) {
 	c := info.Count
 	var wg sync.WaitGroup
 
@@ -53,21 +87,31 @@ func generateNumbers(info *jsondata.Info) {
 	wg.Wait()
 }
 
+func checkArguments() {
+	if len(os.Args) != 2 {
+		fmt.Printf("Wrong number of arguments!...")
+		os.Exit(1)
+	}
+}
+
 func main() {
+	checkArguments()
+	server := os.Args[1]
+	fmt.Printf("Server:%s\n", server)
 	info := jsondata.Info{}
 
 	for {
-		jsonStr := console.ReadString("Input config as JSON:")
-
-		if jsonStr == "" {
-			break
-		}
-
-		e := json.Unmarshal([]byte(jsonStr), &info)
-		if e == nil {
-			generateNumbers(&info)
+		_ = console.ReadString("Push enter to generate:")
+		status, jsonStr := infoClient(server)
+		if status == http.StatusOK {
+			e := json.Unmarshal([]byte(jsonStr), &info)
+			if e == nil {
+				generateTexts(&info)
+			} else {
+				_, _ = fmt.Fprintf(os.Stderr, "internal problem occurred:%s\n", e.Error())
+			}
 		} else {
-			_, _ = fmt.Fprintf(os.Stderr, "internal problem occurred:%s\n", e.Error())
+			fmt.Printf("Status Code:%d\n", status)
 		}
 	}
 }

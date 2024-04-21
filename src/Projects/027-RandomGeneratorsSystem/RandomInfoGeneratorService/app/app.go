@@ -28,16 +28,6 @@ func checkError(err error, w http.ResponseWriter, message string, statusCode int
 	return true
 }
 
-func checkParameter(w http.ResponseWriter, r *http.Request, parameter, message string, statusCode int) (bool, string) {
-	value := r.FormValue(parameter)
-	if value == "" {
-		http.Error(w, message, statusCode)
-		return false, ""
-	}
-
-	return true, value
-}
-
 func randomInfoHandler(w http.ResponseWriter, r *http.Request) {
 	if !checkMethod(w, r, "Method must be GET!...") {
 		return
@@ -45,16 +35,16 @@ func randomInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	n := rand.Intn(20001) + 10000
-	min := rand.Intn(6) + 5
-	max := rand.Intn(20-min+1) + min
+	minVal := rand.Intn(6) + 5
+	maxVal := rand.Intn(20-minVal+1) + minVal
 	count := rand.Intn(20) + 10
 	basePath := str.GenerateRandomTextEN(10)
-	info := jsondata.NewInfo(n, min, max, count, basePath)
-	data, err := json.Marshal(info)
-	if !checkError(err, w, "Internal server error!...", http.StatusInternalServerError) {
+	info := jsondata.NewInfo(n, minVal, maxVal, count, basePath)
+	data, e := json.Marshal(info)
+	if !checkError(e, w, "Internal server error!...", http.StatusInternalServerError) {
 		return
 	}
-	_, err = fmt.Fprintf(w, "%s", string(data))
+	_, e = fmt.Fprintf(w, "%s", string(data))
 }
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
