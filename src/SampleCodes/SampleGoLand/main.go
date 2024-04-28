@@ -1,10 +1,9 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Bir tamsayının belirli bir bitinin değerinin elde edilmesi:
-
-
-	if (a & 1 << k) != 0
+	Soru: Parametresi ile aldığı bir tamsayının en yüksek anlamlı sıfır olan bitinin indeks numarasına geri dönen
+	HighestClearBitIndexUInt32 fonksiyonu ile en düşük anlamlı sıfır olan bitinin indeks numarasına geri dönen
+	LowestClearBitIndexUInt32 fonksiyonunu bitwise paketine ekleyiniz
 
 ------------------------------------------------------------------------------------------------------------------------
 */
@@ -20,10 +19,13 @@ import (
 func main() {
 	for {
 		a := uint32(console.ReadInt("Input number:", ""))
-		k := uint32(console.ReadInt("Input bir index:", ""))
 
 		fmt.Println(bitwise.BitStrUInt32(a))
-		fmt.Println(bitwise.BitStrUInt32(bitwise.ToggleBitUInt32(a, k)))
+		if (a & 1) != 1 {
+			fmt.Printf("%d is even\n", a)
+		} else {
+			fmt.Printf("%d is odd\n", a)
+		}
 		if a == 0 {
 			break
 		}

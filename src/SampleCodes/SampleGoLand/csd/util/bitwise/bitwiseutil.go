@@ -2,6 +2,7 @@ package bitwise
 
 import (
 	"fmt"
+	"strings"
 )
 
 func BitStrUInt8(a uint8) string {
@@ -13,7 +14,17 @@ func BitStrUInt16(a uint16) string {
 }
 
 func BitStrUInt32(a uint32) string {
-	return fmt.Sprintf("%032b", a)
+	var sb strings.Builder
+
+	for i := 31; i >= 0; i-- {
+		if IsSetUInt32(a, uint32(i)) {
+			sb.WriteRune('1')
+		} else {
+			sb.WriteRune('0')
+		}
+	}
+
+	return sb.String()
 }
 
 func BitStrUInt64(a uint64) string {
@@ -35,12 +46,27 @@ func ClearBitUInt64(a, k uint64) uint64 {
 	return a &^ (uint64(1) << k)
 }
 
+func IndicesOfClearBitsUInt32(a uint32) []int {
+	panic("not yet implemented!...")
+}
+
+func IndicesOfSetBitsUInt32(a uint32) []int {
+	panic("not yet implemented!...")
+}
+
 func IsClearUInt32(a, k uint32) bool {
 	return !IsSetUInt32(a, k)
 }
 
 func IsSetUInt32(a, k uint32) bool {
-	return a&uint32(1)<<k != 0
+	return (a & (1 << k)) != 0
+}
+
+func IsPowerOfTwo(a uint32) bool {
+	if a == 0 {
+		return false
+	}
+	return (a & (a - 1)) == 0
 }
 
 func SetBitUInt8(a, k uint8) uint8 {
