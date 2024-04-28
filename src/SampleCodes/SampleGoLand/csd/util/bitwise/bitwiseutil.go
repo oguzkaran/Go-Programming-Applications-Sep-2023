@@ -45,13 +45,56 @@ func ClearBitUInt32(a, k uint32) uint32 {
 func ClearBitUInt64(a, k uint64) uint64 {
 	return a &^ (uint64(1) << k)
 }
+func ClearBitCountUInt32(a uint32) int {
+	count := 0
+	for i := 0; i < 32; i++ {
+		if IsClearUInt32(a, uint32(i)) {
+			count++
+		}
+	}
+
+	return count
+}
+
+func HighestClearBitIndexUInt32(a uint32) int {
+	for i := 31; i >= 0; i-- {
+		if IsClearUInt32(a, uint32(i)) {
+			return i
+		}
+	}
+
+	return -1
+}
+
+func HighestSetBitIndexUInt32(a uint32) int {
+	for i := 31; i >= 0; i-- {
+		if IsSetUInt32(a, uint32(i)) {
+			return i
+		}
+	}
+
+	return -1
+}
 
 func IndicesOfClearBitsUInt32(a uint32) []int {
-	panic("not yet implemented!...")
+	result := *new([]int)
+	for i := 0; i < 32; i++ {
+		if IsClearUInt32(a, uint32(i)) {
+			result = append(result, i)
+		}
+	}
+	return result
 }
 
 func IndicesOfSetBitsUInt32(a uint32) []int {
-	panic("not yet implemented!...")
+	result := *new([]int)
+
+	for i := 0; i < 32; i++ {
+		if IsSetUInt32(a, uint32(i)) {
+			result = append(result, i)
+		}
+	}
+	return result
 }
 
 func IsClearUInt32(a, k uint32) bool {
@@ -69,6 +112,26 @@ func IsPowerOfTwo(a uint32) bool {
 	return (a & (a - 1)) == 0
 }
 
+func LowestClearBitIndexUInt32(a uint32) int {
+	for i := 0; i < 32; i++ {
+		if IsClearUInt32(a, uint32(i)) {
+			return i
+		}
+	}
+
+	return -1
+}
+
+func LowestSetBitIndexUInt32(a uint32) int {
+	for i := 0; i < 32; i++ {
+		if IsSetUInt32(a, uint32(i)) {
+			return i
+		}
+	}
+
+	return -1
+}
+
 func SetBitUInt8(a, k uint8) uint8 {
 	return a | uint8(1)<<k
 }
@@ -83,6 +146,17 @@ func SetBitUInt32(a, k uint32) uint32 {
 
 func SetBitUInt64(a, k uint64) uint64 {
 	return a | uint64(1)<<k
+}
+
+func SetBitCountUInt32(a uint32) int {
+	count := 0
+	for i := 0; i < 32; i++ {
+		if IsSetUInt32(a, uint32(i)) {
+			count++
+		}
+	}
+
+	return count
 }
 
 func ToggleBitUInt32(a, k uint32) uint32 {
