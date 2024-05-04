@@ -13,7 +13,7 @@ import (
 )
 
 func checkArguments() {
-	if len(os.Args) != 2 {
+	if len(os.Args) != 3 {
 		fmt.Printf("Wrong number of arguments!...")
 		os.Exit(1)
 	}
@@ -53,8 +53,9 @@ func timeClient(name, server string) (int, string) {
 func Run() {
 	checkArguments()
 	server := os.Args[1]
+	name := os.Args[2]
 	fmt.Printf("Server:%s\n", server)
-	status, message := timeClient("Deniz", server)
+	status, message := timeClient(name, server)
 
 	if status == http.StatusOK {
 		fmt.Println(message)

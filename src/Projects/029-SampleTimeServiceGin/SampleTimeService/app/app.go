@@ -38,7 +38,7 @@ func timeHandler(c *gin.Context) {
 
 	if value != "" {
 		now := time.Now()
-		ci := jsondata.NewClientInfo(c.RemoteIP(), "Hello "+value, now.Format("02/01/2006 15:04:05"))
+		ci := jsondata.NewClientInfo(c.Request.RemoteAddr, "Hello "+value, now.Format("02/01/2006 15:04:05"))
 		saveTimeClientInfo(ci)
 		c.IndentedJSON(http.StatusOK, ci)
 
@@ -53,7 +53,7 @@ func dateHandler(c *gin.Context) {
 
 	if value != "" {
 		now := time.Now()
-		ci := jsondata.NewClientInfo(c.ClientIP(), "Hello "+value, now.Format("02/01/2006"))
+		ci := jsondata.NewClientInfo(c.Request.RemoteAddr, "Hello "+value, now.Format("02/01/2006"))
 		saveDateClientInfo(ci)
 		c.IndentedJSON(http.StatusOK, ci)
 	} else {
