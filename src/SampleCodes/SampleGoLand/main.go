@@ -1,10 +1,7 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
 
-	Soru: Parametresi ile aldığı bir tamsayının en yüksek anlamlı sıfır olan bitinin indeks numarasına geri dönen
-	HighestClearBitIndexUInt32 fonksiyonu ile en düşük anlamlı sıfır olan bitinin indeks numarasına geri dönen
-	LowestClearBitIndexUInt32 fonksiyonunu bitwise paketine ekleyiniz. Fonksiyonlar sayının ilgili değere ilişkin bir
-	biti yoksa -1 değerine geri dönecektir
+
 
 ------------------------------------------------------------------------------------------------------------------------
 */
@@ -12,20 +9,31 @@
 package main
 
 import (
-	"SampleGoLand/csd/console"
-	"SampleGoLand/csd/util/bitwise"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"os"
 )
 
-func main() {
-	for {
-		a := uint32(console.ReadInt("Input number:", ""))
+func greetingCallback(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Hello",
+		"company": "CSD",
+	})
+}
 
-		fmt.Println(bitwise.BitStrUInt32(a))
-		fmt.Printf("Lowest set bit Index:%d\n", bitwise.LowestSetBitIndexUInt32(a))
-		fmt.Printf("Lowest clear bit Index:%d\n", bitwise.LowestClearBitIndexUInt32(a))
-		if a == 0 {
-			break
-		}
+func defaultCallback(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Default",
+		"company": "CSD",
+	})
+}
+
+func main() {
+	e := gin.New()
+	e.GET("/greeting", greetingCallback)
+	e.GET("/", defaultCallback)
+	if err := e.Run(); err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 	}
 }
