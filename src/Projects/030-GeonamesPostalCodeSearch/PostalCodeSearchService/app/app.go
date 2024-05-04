@@ -32,8 +32,11 @@ import (
 	"PostalCodeSearchService/app/jsondata"
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
 	"net/http"
+	"os"
+	"strconv"
 	"time"
 )
 
@@ -41,75 +44,75 @@ const server = "http://api.geonames.org"
 const postalCodeSearcEndPoint = "/postalCodeSearchJSON"
 const postalCodeSearchURL = server + postalCodeSearcEndPoint
 
-func postalCodeSearchCallback(postalCode int, server string) (int, string) {
+func sendInternalServerError(c *gin.Context) {
+	c.JSON(http.StatusInternalServerError, gin.H{
+		"error": "Internal server error'...",
+	})
+}
+func postalCodeSearchCallback(c *gin.Context, postalCode int, server string) {
 	url := fmt.Sprintf("%s?formatted=true&postalcode=%d&maxRows=10&username=csystem&country=tr", postalCodeSearchURL, postalCode)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		fmt.Printf("Error in request:%s", err.Error())
-		return http.StatusInternalServerError, ""
+		sendInternalServerError(c)
+		return
 	}
 
 	client := http.Client{Timeout: 20 * time.Second}
 	res, err := client.Do(req)
 	if err != nil {
-		fmt.Printf("Client error:%s", err.Error())
-		return http.StatusInternalServerError, ""
+		sendInternalServerError(c)
+		return
 	}
 	pi := jsondata.PostalCodeInfo{}
 
 	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-
-		}
+		_ = Body.Close()
 	}(res.Body)
 
 	if res.StatusCode != http.StatusOK {
-		return res.StatusCode, ""
+		sendInternalServerError(c)
+		return
 	}
 
 	data, err := io.ReadAll(res.Body)
 
 	if err != nil {
-		fmt.Printf("Data error:%s", err.Error())
-		return http.StatusInternalServerError, ""
+		sendInternalServerError(c)
+		return
 	}
 
 	err = json.Unmarshal(data, &pi)
 
 	if err != nil {
-		fmt.Printf("Data Unmarshalerror:%s", err.Error())
-		return http.StatusInternalServerError, ""
+		sendInternalServerError(c)
+		return
 	}
-
-	for _, pc := range pi.PostalCodes {
-		fmt.Println(pc.PlaceName)
-	}
-
-	return res.StatusCode, string(data)
+	c.IndentedJSON(http.StatusOK, pi)
 }
 
-func readPostalCode(prompt string) int {
-	var code int
+func postalCodeGetCallback(c *gin.Context) {
+	codeStr := c.Request.FormValue("code")
+	if codeStr != "" {
+		code, e := strconv.Atoi(codeStr)
+		if e == nil {
+			postalCodeSearchCallback(c, code, "")
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Postal code must be a numeric value!...",
+			})
+		}
 
-	fmt.Print(prompt)
-	_, _ = fmt.Scanf("%d", &code)
-
-	return code
+	} else {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "Parameter 'code' required!...",
+		})
+	}
 }
 
 func Run() {
-	for {
-		code := readPostalCode("Input postal code:")
-		if code <= 0 {
-			break
-		}
-		status, message := postalCodeSearchCallback(code, server)
-
-		if status == http.StatusOK {
-			fmt.Println(message)
-		} else {
-			fmt.Printf("Status Code:%d\n", status)
-		}
+	engine := gin.New()
+	engine.GET("/api/postalcode", postalCodeGetCallback)
+	if e := engine.Run(); e != nil {
+		_, _ = fmt.Fprintf(os.Stderr, e.Error())
 	}
 }
