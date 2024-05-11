@@ -2,21 +2,21 @@ package app
 
 import (
 	"PlaceInfoInserter/app/converter"
-	"PlaceInfoInserter/app/data/entity"
+	"PlaceInfoInserter/app/data/repository"
 	"PlaceInfoInserter/app/jsondata"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 	"net/http"
 	"os"
+	"strconv"
 )
 
-func savePlaceCallback(c *gin.Context, db *gorm.DB) {
+func savePlaceCallback(c *gin.Context, r *repository.PlaceInfoRepository) {
 	var pi jsondata.PlaceInfoSaveDTO
 
 	if e := c.ShouldBindJSON(&pi); e == nil {
-		db.Create(converter.ToPlaceInfoSave(&pi))
+		r.Save(converter.ToPlaceInfoSave(&pi))
 		fmt.Println(pi)
 		c.JSON(http.StatusCreated, pi)
 	} else {
@@ -26,29 +26,36 @@ func savePlaceCallback(c *gin.Context, db *gorm.DB) {
 	}
 }
 
-func addEndPoints(e *gin.Engine, db *gorm.DB) {
+func addEndPoints(e *gin.Engine, r *repository.PlaceInfoRepository) {
 	e.POST("/api/places/save", func(context *gin.Context) {
-		savePlaceCallback(context, db)
+		savePlaceCallback(context, r)
 	})
 }
 
-func initDB() *gorm.DB {
-	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres password=csd1993 sslmode=disable dbname=gs23_weatherinfosystemdb_dev")
-	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "database initialization problem:%s\n", err.Error())
+func checkArguments(length int) {
+	if length != len(os.Args) {
+		_, _ = fmt.Fprintf(os.Stderr, "wrong number of arguments\n")
 		os.Exit(1)
 	}
-
-	db.AutoMigrate(&entity.PlaceInfo{})
-
-	return db
 }
 
 func Run() {
-	db := initDB()
+	checkArguments(2)
+	port, err := strconv.Atoi(os.Args[1])
+	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, "Invalid server port!...")
+		os.Exit(1)
+	}
+
+	addr := fmt.Sprintf(":%d", port)
 	e := gin.New()
-	addEndPoints(e, db)
-	if err := e.Run(); err != nil {
+
+	r := repository.NewPlaceInfoRepository()
+	if r == nil {
+		_, _ = fmt.Fprintf(os.Stderr, "Repository prblem occurred!...")
+	}
+	addEndPoints(e, r)
+	if err := e.Run(addr); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 	}
 }
