@@ -2,12 +2,14 @@ package app
 
 import (
 	"PlaceInfoRegionInserterService/app/jsondata"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -21,11 +23,19 @@ func sendInternalServerError(c *gin.Context) {
 }
 
 func saveRegionServiceCallback(c *gin.Context, pi *jsondata.PlaceInfoRegion) {
-	req, err := http.NewRequest("POST", endPoint, nil)
+	data, err := json.Marshal(*pi)
 	if err != nil {
 		sendInternalServerError(c)
 		return
 	}
+
+	req, err := http.NewRequest("POST", endPoint, bytes.NewBuffer(data))
+	if err != nil {
+		sendInternalServerError(c)
+		return
+	}
+
+	req.Header.Add("Content-Type", "application/json")
 
 	client := http.Client{Timeout: 20 * time.Second}
 	res, err := client.Do(req)
@@ -43,20 +53,21 @@ func saveRegionServiceCallback(c *gin.Context, pi *jsondata.PlaceInfoRegion) {
 		return
 	}
 
-	data, err := io.ReadAll(res.Body)
+	data, err = io.ReadAll(res.Body)
 
 	if err != nil {
 		sendInternalServerError(c)
 		return
 	}
 
-	err = json.Unmarshal(data, &pi)
+	err = json.Unmarshal(data, pi)
 
 	if err != nil {
 		sendInternalServerError(c)
 		return
 	}
-	c.IndentedJSON(http.StatusOK, pi)
+
+	c.JSON(http.StatusCreated, gin.H{"status": "created"})
 }
 
 func saveRegionPostCallback(c *gin.Context) {
@@ -68,15 +79,25 @@ func saveRegionPostCallback(c *gin.Context) {
 	}
 
 	fmt.Printf("%v\n", *pi)
-	//saveRegionServiceCallback(c, pi)
-	c.JSON(http.StatusCreated, gin.H{"status": "created"})
+	saveRegionServiceCallback(c, pi)
+
 }
 
 func Run() {
-	//Get listening port from command line argument
+	if len(os.Args) != 2 {
+		_, _ = fmt.Fprintf(os.Stderr, "wrong number of arguments")
+		os.Exit(1)
+	}
+	port, e := strconv.Atoi(os.Args[1])
+
+	if e != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "invalid port value")
+		os.Exit(1)
+	}
+
 	engine := gin.New()
-	engine.POST("/api/weather/region/save", saveRegionPostCallback) //TODO
-	if e := engine.Run(); e != nil {
+	engine.POST("/api/weather/region/save", saveRegionPostCallback)
+	if e := engine.Run(fmt.Sprintf(":%d", port)); e != nil {
 		_, _ = fmt.Fprintf(os.Stderr, e.Error())
 	}
 }
