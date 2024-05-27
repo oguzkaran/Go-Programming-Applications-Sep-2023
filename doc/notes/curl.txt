@@ -8,10 +8,5 @@ curl -d '{"region": "Turkey", "west": 26.04, "south": 35.82, "east": 44.79, "nor
 
 curl -d "{\"region\": \"USA\", \"west\": -125, \"south\": 25, \"east\": -66.96, \"north\": 49.5}" -H "Content-Type: application/json" -X POST "http://161.97.141.113:50531/api/weather/region/save"
 
-curl -d "{\"region\": \"USA\", \"west\": -125, \"south\": 25, \"east\": -66.96, \"north\": 78.9}" -H "Content-Type: application/json" -X POST "http://161.97.141.113:50531/api/weather/region/save"
-
-curl -d "{\"region\": \"USA\", \"west\": -125, \"south\": 25, \"east\": -66.96, \"north\": 78.9}" -H "Content-Type: application/json" -X POST "http://localhost:4500/api/weather/region/save"
-
-curl -d "{\"region\": \"USA\", \"west\": -125, \"south\": 25, \"east\": -66.96}" -H "Content-Type: application/json" -X POST "http://localhost:4500/api/weather/region/save"
 
 
