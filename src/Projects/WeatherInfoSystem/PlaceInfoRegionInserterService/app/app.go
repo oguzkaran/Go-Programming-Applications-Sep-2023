@@ -14,24 +14,24 @@ import (
 )
 
 const server = "http://161.97.141.113:50530"
-const endPoint = server + "/api/weather/save/region"
+const endPoint = server + "/api/weather/places/region/save"
 
-func sendInternalServerError(c *gin.Context) {
+func sendInternalServerError(c *gin.Context, message string) {
 	c.JSON(http.StatusInternalServerError, gin.H{
-		"error": "Internal server error'...",
+		"error": message,
 	})
 }
 
 func saveRegionServiceCallback(c *gin.Context, pi *jsondata.PlaceInfoRegion) {
 	data, err := json.Marshal(*pi)
 	if err != nil {
-		sendInternalServerError(c)
+		sendInternalServerError(c, "Internal server error")
 		return
 	}
 
 	req, err := http.NewRequest("POST", endPoint, bytes.NewBuffer(data))
 	if err != nil {
-		sendInternalServerError(c)
+		sendInternalServerError(c, "Internal server error")
 		return
 	}
 
@@ -40,7 +40,7 @@ func saveRegionServiceCallback(c *gin.Context, pi *jsondata.PlaceInfoRegion) {
 	client := http.Client{Timeout: 20 * time.Second}
 	res, err := client.Do(req)
 	if err != nil {
-		sendInternalServerError(c)
+		sendInternalServerError(c, "Internal server error")
 		return
 	}
 
@@ -48,22 +48,27 @@ func saveRegionServiceCallback(c *gin.Context, pi *jsondata.PlaceInfoRegion) {
 		_ = Body.Close()
 	}(res.Body)
 
+	if res.StatusCode == http.StatusBadRequest {
+		sendInternalServerError(c, "Bad request!...")
+		return
+	}
+
 	if res.StatusCode != http.StatusOK {
-		sendInternalServerError(c)
+		sendInternalServerError(c, "Internal server error")
 		return
 	}
 
 	data, err = io.ReadAll(res.Body)
 
 	if err != nil {
-		sendInternalServerError(c)
+		sendInternalServerError(c, "Internal server error")
 		return
 	}
 
 	err = json.Unmarshal(data, pi)
 
 	if err != nil {
-		sendInternalServerError(c)
+		sendInternalServerError(c, "Internal server error")
 		return
 	}
 
@@ -80,7 +85,6 @@ func saveRegionPostCallback(c *gin.Context) {
 
 	fmt.Printf("%v\n", *pi)
 	saveRegionServiceCallback(c, pi)
-
 }
 
 func Run() {

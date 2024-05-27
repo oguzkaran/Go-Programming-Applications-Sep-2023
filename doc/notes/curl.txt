@@ -1,7 +1,17 @@
 //For Operating Systems except windows
-curl -d '{"name": "Test Place", "lat": 34.678, "lng": 45.897}' -H "Content-Type: application/json" -X POST 'http:/192.168.183.146:8080/api/places/save'
+curl -d '{"name": "Test Place", "lat": 34.678, "lng": 45.897}' -H "Content-Type: application/json" -X POST 'http:/192.168.183.146:8080/api/weather/location/save'
 
-curl -d '{"region": "Mest", "east": 34.678, "west": 45.897, "north": 55.78, "south": 67.90}' -H "Content-Type: application/json" -X POST 'http:/localhost:6565/api/weather/region/save'
+curl -d '{"region": "Turkey", "west": 26.04, "south": 35.82, "east": 44.79, "north": 42.14}' -H "Content-Type: application/json" -X POST 'http://161.97.141.113:50530/api/weather/region/save'
 
-curl -d '{"region": "Hest", "east": 34.678, "west": 45.897, "north": 55.78, "south": 67.90}' -H "Content-Type: application/json" -X POST 'http://161.97.141.113:50531/api/weather/region/save'
+
+//For Windows
+
+curl -d "{\"region\": \"USA\", \"west\": -125, \"south\": 25, \"east\": -66.96, \"north\": 49.5}" -H "Content-Type: application/json" -X POST "http://161.97.141.113:50531/api/weather/region/save"
+
+curl -d "{\"region\": \"USA\", \"west\": -125, \"south\": 25, \"east\": -66.96, \"north\": 78.9}" -H "Content-Type: application/json" -X POST "http://161.97.141.113:50531/api/weather/region/save"
+
+curl -d "{\"region\": \"USA\", \"west\": -125, \"south\": 25, \"east\": -66.96, \"north\": 78.9}" -H "Content-Type: application/json" -X POST "http://localhost:4500/api/weather/region/save"
+
+curl -d "{\"region\": \"USA\", \"west\": -125, \"south\": 25, \"east\": -66.96}" -H "Content-Type: application/json" -X POST "http://localhost:4500/api/weather/region/save"
+
 
