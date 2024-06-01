@@ -18,7 +18,15 @@ const endPoint = server + "/api/weather/places/region/save"
 
 func sendInternalServerError(c *gin.Context, message string) {
 	c.JSON(http.StatusInternalServerError, gin.H{
-		"error": message,
+		"error":  message,
+		"status": "internal server error",
+	})
+}
+
+func sendBadRequestError(c *gin.Context, message string) {
+	c.JSON(http.StatusBadRequest, gin.H{
+		"error":  message,
+		"status": "bas request",
 	})
 }
 
@@ -49,7 +57,7 @@ func saveRegionServiceCallback(c *gin.Context, pi *jsondata.PlaceInfoRegion) {
 	}(res.Body)
 
 	if res.StatusCode == http.StatusBadRequest {
-		sendInternalServerError(c, "Bad request!...")
+		sendBadRequestError(c, "Bad request or Region already exists!...")
 		return
 	}
 

@@ -1,17 +1,25 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
-	Aşağıdaki örnekte fonksiyon sürekli kendisini çağrıdığından. Diğer bir deyişle kendisini çağırmayı belli bir noktada
-	sonlandırmadığından stack taşması oluşur. Fonksiyonun herhangi bir parametre değişkeni ve yerel değişkeni olmadığına
-	dikkar ediniz
+
 ------------------------------------------------------------------------------------------------------------------------
 */
 
 package main
 
-func foo() {
-	foo()
-}
+import (
+	"SampleGoLand/csd/console"
+	"SampleGoLand/csd/recursion/recursionutil"
+	"fmt"
+)
 
 func main() {
-	foo()
+	for {
+		n := console.ReadInt("Input n:", "")
+
+		if n <= 0 {
+			break
+		}
+
+		fmt.Printf("Fibonacci(%d) = %d\n", n, recursionutil.Fibonacci(n))
+	}
 }
