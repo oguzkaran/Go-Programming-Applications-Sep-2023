@@ -44,11 +44,26 @@ func Fibonacci(n int) int {
 }
 
 func Gcd(a, b int) int {
-	panic("not yet implemented!...")
+	if a == 0 {
+		return b
+	}
+	return Gcd(b%a, a)
 }
 
 func PrintNumber(a int) {
-	panic("not yet implemented!...")
+	if a == 0 {
+		return
+	}
+	PrintNumber(a / 10)
+	fmt.Print(a % 10)
+}
+
+func PrintNumberV2(a int) {
+	if a == 0 {
+		return
+	}
+	PrintNumber(a / 10)
+	fmt.Printf("%c", a%10+'0')
 }
 
 func PrintReverseASCII(s string) {
