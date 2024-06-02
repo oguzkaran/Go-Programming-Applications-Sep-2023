@@ -43,14 +43,14 @@ func Fibonacci(n int) int {
 	return fibonacciRecur(n)
 }
 
-func Gcd(a, b int) int {
+func Gcd(a, b int) int { //Sinan
 	if a == 0 {
 		return b
 	}
 	return Gcd(b%a, a)
 }
 
-func PrintNumber(a int) {
+func PrintNumber(a int) { //Sinan
 	if a == 0 {
 		return
 	}
@@ -58,7 +58,7 @@ func PrintNumber(a int) {
 	fmt.Print(a % 10)
 }
 
-func PrintNumberV2(a int) {
+func PrintNumberV2(a int) { //Sinan
 	if a == 0 {
 		return
 	}
