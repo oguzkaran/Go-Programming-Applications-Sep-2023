@@ -21,6 +21,10 @@ func SqrtUnsigned[T UnsignedInteger](a T) any {
 	return math.Sqrt(float64(a))
 }
 
+func AbsFloat32(a float32) float32 {
+	return float32(math.Abs(float64(a)))
+}
+
 func Add[T cmp.Ordered](a, b T) T {
 	return a + b
 }

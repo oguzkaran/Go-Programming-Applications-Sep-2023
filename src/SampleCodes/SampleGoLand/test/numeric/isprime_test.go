@@ -21,6 +21,6 @@ func Test_IsPrime(t *testing.T) {
 
 	for _, data := range inputs {
 		actual := numeric.IsPrime(data.val)
-		assert.AssertEqualsBool(t, fmt.Sprintf("Test_IsPrime FAIL: Value:%d, Expected:%t, Actual:%t", data.val, data.expected, actual), data.expected, actual)
+		assert.EqualsBool(t, fmt.Sprintf("Test_IsPrime FAIL: Value:%d, Expected:%t, Actual:%t", data.val, data.expected, actual), data.expected, actual)
 	}
 }

@@ -47,18 +47,11 @@ func Gcd(a, b int) int { //Sinan
 	if a == 0 {
 		return b
 	}
+
 	return Gcd(b%a, a)
 }
 
 func PrintNumber(a int) { //Sinan
-	if a == 0 {
-		return
-	}
-	PrintNumber(a / 10)
-	fmt.Print(a % 10)
-}
-
-func PrintNumberV2(a int) { //Sinan
 	if a == 0 {
 		return
 	}

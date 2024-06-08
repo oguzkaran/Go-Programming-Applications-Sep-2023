@@ -10,5 +10,5 @@ import (
 func Test_IsPrimeFalse(t *testing.T) {
 	input := 1
 
-	assert.AssertFalse(t, fmt.Sprintf("Test_IsPrime_True FAIL: %d is prime", input), numeric.IsPrime(input))
+	assert.False(t, fmt.Sprintf("Test_IsPrime_True FAIL: %d is prime", input), numeric.IsPrime(input))
 }

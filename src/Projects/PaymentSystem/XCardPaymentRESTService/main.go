@@ -1,0 +1,5 @@
+package XCardPaymentRESTService
+
+func main() {
+
+}

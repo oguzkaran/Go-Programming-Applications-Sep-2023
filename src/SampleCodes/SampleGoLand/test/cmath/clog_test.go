@@ -13,7 +13,7 @@ func Test_CLog(t *testing.T) {
 	var expected float64 = math.Log(input)
 	actual, _ := cmath.CLog(input)
 
-	assert.AssertEqualsFloat64(t, fmt.Sprintf("Test CLog FAIL:Input:%f, Expected:%f, Actual:%f\n", input, expected, actual), expected, actual)
+	assert.EqualsFloat64(t, fmt.Sprintf("Test CLog FAIL:Input:%f, Expected:%f, Actual:%f\n", input, expected, actual), expected, actual, 0.0001)
 }
 
 func Test_CLog_Error(t *testing.T) {
