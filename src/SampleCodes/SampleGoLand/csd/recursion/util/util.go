@@ -1,6 +1,9 @@
 package util
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 func Factorial(n int) int {
 	if n <= 0 {
@@ -39,10 +42,48 @@ func Fibonacci(n int) int {
 }
 
 func Gcd(a, b int) int {
-	panic("not yet implemented!...")
+	minValue := int(min(math.Abs(float64(a)), math.Abs(float64(b))))
+
+	for i := minValue; i >= 2; i-- {
+		if a%i == 0 && b%i == 0 {
+			return i
+		}
+	}
+
+	return 1
 }
 
 func PrintNumber(a int) {
+	if a == 0 {
+		fmt.Printf("%c", '0')
+		return
+	}
+	s := make([]rune, 11)
+	i := 0
+	isNegative := false
+
+	if a < 0 {
+		isNegative = true
+		a = -a
+	}
+
+	for a != 0 {
+		s[i] = rune(a%10 + '0')
+		i++
+		a /= 10
+	}
+
+	if isNegative {
+		s[i] = '-'
+		i++
+	}
+
+	for i = i - 1; i >= 0; i-- {
+		fmt.Printf("%c", s[i])
+	}
+}
+
+func PrintCollatz(a int) {
 	panic("not yet implemented!...")
 }
 

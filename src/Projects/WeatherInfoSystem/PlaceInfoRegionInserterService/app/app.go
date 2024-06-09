@@ -2,6 +2,7 @@ package app
 
 import (
 	"PlaceInfoRegionInserterService/app/jsondata"
+	"PlaceInfoRegionInserterService/app/logger"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -33,12 +34,14 @@ func sendBadRequestError(c *gin.Context, message string) {
 func saveRegionServiceCallback(c *gin.Context, pi *jsondata.PlaceInfoRegion) {
 	data, err := json.Marshal(*pi)
 	if err != nil {
+		logger.TraceLog.Println("Internal Server error while marshalling")
 		sendInternalServerError(c, "Internal server error")
 		return
 	}
 
 	req, err := http.NewRequest("POST", endPoint, bytes.NewBuffer(data))
 	if err != nil {
+		logger.TraceLog.Println("Internal Server error when post to service")
 		sendInternalServerError(c, "Internal server error")
 		return
 	}
@@ -48,6 +51,7 @@ func saveRegionServiceCallback(c *gin.Context, pi *jsondata.PlaceInfoRegion) {
 	client := http.Client{Timeout: 20 * time.Second}
 	res, err := client.Do(req)
 	if err != nil {
+		logger.TraceLog.Println("Internal Server error while making request")
 		sendInternalServerError(c, "Internal server error")
 		return
 	}
@@ -57,11 +61,13 @@ func saveRegionServiceCallback(c *gin.Context, pi *jsondata.PlaceInfoRegion) {
 	}(res.Body)
 
 	if res.StatusCode == http.StatusBadRequest {
+		logger.TraceLog.Println("Bad request or Region already exists!...")
 		sendBadRequestError(c, "Bad request or Region already exists!...")
 		return
 	}
 
 	if res.StatusCode != http.StatusOK {
+		logger.TraceLog.Println("Internal server error!...")
 		sendInternalServerError(c, "Internal server error")
 		return
 	}
@@ -69,6 +75,7 @@ func saveRegionServiceCallback(c *gin.Context, pi *jsondata.PlaceInfoRegion) {
 	data, err = io.ReadAll(res.Body)
 
 	if err != nil {
+		logger.ErrorLog.Println("Body parsing error")
 		sendInternalServerError(c, "Internal server error")
 		return
 	}
@@ -76,6 +83,7 @@ func saveRegionServiceCallback(c *gin.Context, pi *jsondata.PlaceInfoRegion) {
 	err = json.Unmarshal(data, pi)
 
 	if err != nil {
+		logger.TraceLog.Println("Unmarshall error")
 		sendInternalServerError(c, "Internal server error")
 		return
 	}
@@ -87,11 +95,12 @@ func saveRegionPostCallback(c *gin.Context) {
 	pi := jsondata.NewPlaceInfoRegion()
 
 	if e := c.ShouldBindJSON(pi); e != nil {
+		logger.WarningLog.Println("Bad request")
 		c.JSON(http.StatusBadRequest, gin.H{"error": e.Error()})
 		return
 	}
 
-	fmt.Printf("%v\n", *pi)
+	logger.InfoLog.Printf("%v\n", *pi)
 	saveRegionServiceCallback(c, pi)
 }
 
@@ -107,6 +116,7 @@ func Run() {
 		os.Exit(1)
 	}
 
+	logger.InitLoggers(os.Stdout, os.Stdout, os.Stdout, os.Stderr)
 	engine := gin.New()
 	engine.POST("/api/weather/region/save", saveRegionPostCallback)
 	if e := engine.Run(fmt.Sprintf(":%d", port)); e != nil {

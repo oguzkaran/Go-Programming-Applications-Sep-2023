@@ -28,6 +28,14 @@ func reverseStringRecur(c []rune, left, right int) {
 	reverseStringRecur(c, left+1, right-1)
 }
 
+func printNumberRecur(a int) { //Sinan
+	if a == 0 {
+		return
+	}
+	printNumberRecur(a / 10)
+	fmt.Printf("%c", a%10+'0')
+}
+
 func Factorial(n int) int {
 	if n <= 0 {
 		return 1
@@ -37,7 +45,7 @@ func Factorial(n int) int {
 
 func Fibonacci(n int) int {
 	if n <= 0 {
-		return 1
+		return -1
 	}
 
 	return fibonacciRecur(n)
@@ -53,10 +61,18 @@ func Gcd(a, b int) int { //Sinan
 
 func PrintNumber(a int) { //Sinan
 	if a == 0 {
+		fmt.Printf("%c", '0')
 		return
 	}
-	PrintNumber(a / 10)
-	fmt.Printf("%c", a%10+'0')
+	if a < 0 {
+		fmt.Printf("%c", '-')
+		a = -a
+	}
+	printNumberRecur(a)
+}
+
+func PrintCollatz(a int) {
+	panic("not yet implemented!...")
 }
 
 func PrintReverseASCII(s string) {

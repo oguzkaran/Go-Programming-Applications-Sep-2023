@@ -2,6 +2,7 @@ package file
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -36,4 +37,17 @@ func ReadTestFile(path string) []string {
 	}
 
 	return lines
+}
+
+func GetOutputOfPrintNumber(f func(int), a int) string {
+	var buf bytes.Buffer
+	old := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+	f(a)
+
+	_ = w.Close()
+	os.Stdout = old
+	_, _ = buf.ReadFrom(r)
+	return buf.String()
 }

@@ -1,26 +1,54 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
-    Homework-001-1.sorunun bir çözümü
-    (Not:Çözüm çalışma sorusunun verildiği tarihte işlenmiş konulara göre yazılmıştır)
+    Log'lama işlemi (logging) için pek çok standart olmayan paket olsa da standart log paketi de kullanılabilir. Log'lama
+	işlemi uygulama düzeyinde pek çok durumda kullanılabilmektedir. Aşağıdaki demor örneği inceleyiniz
 ------------------------------------------------------------------------------------------------------------------------
 */
 
 package main
 
 import (
-	"SampleGoLand/csd/console"
-	"SampleGoLand/csd/recursion/recursionutil"
-	"fmt"
+	"errors"
+	"io"
+	"log"
+	"math/rand/v2"
+	"os"
 )
 
+var (
+	TraceLog   *log.Logger
+	InfoLog    *log.Logger
+	WarningLog *log.Logger
+	ErrorLog   *log.Logger
+)
+
+func initLoggers(traceWriter io.Writer, infoWriter io.Writer, warningWriter io.Writer, errorWriter io.Writer) {
+	flag := log.Ldate | log.Ltime | log.Lshortfile
+
+	TraceLog = log.New(traceWriter, "TRACE:", flag)
+	InfoLog = log.New(infoWriter, "INFO:", flag)
+	WarningLog = log.New(warningWriter, "WARN:", flag)
+	ErrorLog = log.New(errorWriter, "ERR:", flag)
+}
+
 func main() {
-	for {
-		n := console.ReadInt("Input n:", "")
+	initLoggers(io.Discard, os.Stdout, os.Stdout, os.Stderr)
+	TraceLog.Println("Application started")
+	generateNumbers(10)
+	e := errors.New("any error")
+	ErrorLog.Println(e.Error())
+	TraceLog.Println("Application ended")
+}
 
-		if n <= 0 {
-			break
-		}
+func generateNumbers(n int) {
+	InfoLog.Print("Number generation started:")
+	sum := 0
 
-		fmt.Printf("Fibonacci(%d) = %d\n", n, recursionutil.Fibonacci(n))
+	for i := 0; i < n; i++ {
+		val := rand.IntN(100)
+		sum += val
 	}
+
+	WarningLog.Println("Sum calculated bu not used yet")
+	InfoLog.Print("Number generation ended:")
 }

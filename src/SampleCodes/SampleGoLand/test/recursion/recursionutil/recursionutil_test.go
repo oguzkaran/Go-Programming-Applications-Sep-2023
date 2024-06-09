@@ -57,3 +57,51 @@ func TestGcd(t *testing.T) {
 		assert.Equals(t, message, test.gcd, actual)
 	}
 }
+
+// Author: Deniz Öğüt
+func TestFibonacci(t *testing.T) {
+	tests := []struct {
+		input    int
+		expected int
+	}{
+		{0, -1},
+		{1, 0},
+		{2, 1},
+		{3, 1},
+		{4, 2},
+		{5, 3},
+		{6, 5},
+		{7, 8},
+		{8, 13},
+		{9, 21},
+		{10, 34},
+	}
+
+	for _, test := range tests {
+		actual := recursionutil.Fibonacci(test.input)
+		message := fmt.Sprintf("Fibonacci(%d) = %d, want %d", test.input, actual, test.expected)
+		assert.Equals(t, message, test.expected, actual)
+	}
+}
+
+// Author: Deniz Öğüt
+func TestPrintNumber(t *testing.T) {
+	tests := []struct {
+		input    int
+		expected string
+	}{
+		{1234, "1234"},
+		{0, "0"},
+		{56, "56"},
+		{789, "789"},
+		{-1234, "-1234"},
+		{-56, "-56"},
+		{-789, "-789"},
+	}
+
+	for _, test := range tests {
+		output := file.GetOutputOfPrintNumber(recursionutil.PrintNumber, test.input)
+		message := fmt.Sprintf("PrintNumber(%d) = %q; want %q", test.input, output, test.expected)
+		assert.Equals(t, message, test.expected, output)
+	}
+}
