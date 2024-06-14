@@ -1,5 +1,5 @@
 
-- DAL katmanının metotlarının birim testlerini yapınız
+- DAL katmanının metotlarının birim testlerini yazınız
 
 - Kalkış yeri, varış yeri, kalkış tarihi verildiğinde uygun uçuşları getiren
 fonksiyonu flightreposityory içerisinde yazınız ve DAL katmanına ekleyiniz
