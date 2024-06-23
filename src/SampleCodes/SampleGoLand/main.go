@@ -1,54 +1,56 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
-    Log'lama işlemi (logging) için pek çok standart olmayan paket olsa da standart log paketi de kullanılabilir. Log'lama
-	işlemi uygulama düzeyinde pek çok durumda kullanılabilmektedir. Aşağıdaki demor örneği inceleyiniz
+    Homework-002-1.sorunun bir çözümü
+    (Not: Çözüm çalışma sorusunun verildiği tarihte işlenmiş konulara göre yazılmıştır)
 ------------------------------------------------------------------------------------------------------------------------
 */
 
 package main
 
 import (
-	"errors"
-	"io"
-	"log"
-	"math/rand/v2"
-	"os"
+	"fmt"
 )
 
-var (
-	TraceLog   *log.Logger
-	InfoLog    *log.Logger
-	WarningLog *log.Logger
-	ErrorLog   *log.Logger
-)
+func printAbove(n int) {
+	for i := 0; i < n; i++ {
+		for k := 0; k < n-i; k++ {
+			fmt.Print(" ")
+		}
 
-func initLoggers(traceWriter io.Writer, infoWriter io.Writer, warningWriter io.Writer, errorWriter io.Writer) {
-	flag := log.Ldate | log.Ltime | log.Lshortfile
+		for k := 0; k < 2*i-1; k++ {
+			fmt.Print("*")
+		}
 
-	TraceLog = log.New(traceWriter, "TRACE:", flag)
-	InfoLog = log.New(infoWriter, "INFO:", flag)
-	WarningLog = log.New(warningWriter, "WARN:", flag)
-	ErrorLog = log.New(errorWriter, "ERR:", flag)
+		fmt.Println()
+	}
+}
+
+func printBelow(n int) {
+	for i := 0; i < n; i++ {
+		for k := 0; k < i; k++ {
+			fmt.Print(" ")
+		}
+
+		for k := 0; k < 2*(n-i)-1; k++ {
+			fmt.Print("*")
+		}
+
+		fmt.Println()
+	}
+}
+
+func printDiamond(n int) {
+	printAbove(n)
+	printBelow(n)
+}
+
+func run() {
+	var n int
+	fmt.Print("Input n:")
+	_, _ = fmt.Scanf("%d", &n)
+	printDiamond(n)
 }
 
 func main() {
-	initLoggers(io.Discard, os.Stdout, os.Stdout, os.Stderr)
-	TraceLog.Println("Application started")
-	generateNumbers(10)
-	e := errors.New("any error")
-	ErrorLog.Println(e.Error())
-	TraceLog.Println("Application ended")
-}
-
-func generateNumbers(n int) {
-	InfoLog.Print("Number generation started:")
-	sum := 0
-
-	for i := 0; i < n; i++ {
-		val := rand.IntN(100)
-		sum += val
-	}
-
-	WarningLog.Println("Sum calculated bu not used yet")
-	InfoLog.Print("Number generation ended:")
+	run()
 }
