@@ -1,0 +1,8 @@
+- Uygulamada komut satırından alınan milisaniye cinsinden periyotta çalışan bir scheduler yaratılacaktır ve her
+periyotta scheduler "I am OK" mesajını gönderecektir
+
+- Receiver uygulamada verilen mesajlar logger ile yapılacaktır. log mesajı içerisinde gönderme ve alma zamanları da
+ayrıca bulunacaktır. Yani sender gönderme zamanını receiver'a gönderecek, receiver aldığı zaman bilgisi ile birlikte
+server'ın gönderdiği mesajı da log olarak basacaktır
+
+- Yazının gönderme biçimini ve log mesajını dilediğiniz gibi belirleyebilirsiniz.
