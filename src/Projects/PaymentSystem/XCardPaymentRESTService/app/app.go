@@ -19,5 +19,5 @@ func Run() {
 	*/
 	initApplication()
 	const paymentManagerServerHost = "161.97.141.113"
-	const paymentManagerServerPort = 50540
+	const paymentManagerServerPort = 50538
 }
