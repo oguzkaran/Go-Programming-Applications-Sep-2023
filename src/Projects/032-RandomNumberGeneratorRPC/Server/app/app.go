@@ -1,28 +1,15 @@
 package app
 
 import (
-	"Server/app/shared"
+	"Server/app/shared/impl"
 	"Server/csd/console"
-	"errors"
 	"fmt"
-	"math/rand/v2"
 	"net"
 	"net/rpc"
 	"os"
 )
 
-type RandomNumberGenerator int
-
-func (rg *RandomNumberGenerator) GenerateNumber(info *shared.RandomNumberInfo, result *int) error {
-	if info.Min >= info.Bound {
-		return errors.New(fmt.Sprintf("%d must be less than %d\n", info.Min, info.Bound))
-	}
-
-	*result = rand.IntN(info.Bound-info.Min) + info.Min
-	return nil
-}
-
-func registerGenerator(gen *RandomNumberGenerator) {
+func registerGenerator(gen *impl.RandomNumberGenerator) {
 	if e := rpc.Register(gen); e != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "registerGenerator: %s\n", e.Error())
 		os.Exit(1)
@@ -51,8 +38,8 @@ func getTCPListener(addr *net.TCPAddr) *net.TCPListener {
 }
 
 func Run() {
-	console.CheckLengthEquals(2, len(os.Args), "usage: ./server <port number>")
-	gen := new(RandomNumberGenerator)
+	console.CheckLengthEquals(2, len(os.Args), "usage: ./rpc_server <port number>")
+	gen := new(impl.RandomNumberGenerator)
 	registerGenerator(gen)
 	tcp := getTCPAddr()
 	listener := getTCPListener(tcp)
@@ -61,6 +48,8 @@ func Run() {
 		_ = listener.Close()
 	}(listener)
 
+	_ = console.WriteLine("RPC server is waiting for a client on :%s", os.Args[1])
+
 	for {
 		con, e := listener.Accept()
 		if e != nil {
@@ -68,6 +57,6 @@ func Run() {
 			continue
 		}
 
-		rpc.ServeConn(con)
+		go rpc.ServeConn(con) //Bu işlemde belli bir süre bağlı kalıp işlem yapmayan client'ların bağlantıları kesilmeli
 	}
 }
