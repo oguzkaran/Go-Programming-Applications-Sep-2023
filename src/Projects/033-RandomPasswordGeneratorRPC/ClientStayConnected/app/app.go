@@ -18,15 +18,16 @@ func connect() *rpc.Client {
 	return c
 }
 
-func callGenerate(client *rpc.Client, info *shared.RandomNumberInfo[int]) {
-	var result int
-	e := client.Call("RandomNumberGenerator.GenerateNumberInt", info, &result)
+func callGenerate(client *rpc.Client, info *shared.PasswordInfo) {
+	var result shared.PasswordsInfo
+
+	e := client.Call("RandomPasswordGenerator.GeneratePasswords", info, &result)
 	if e != nil {
 		_, _ = os.Stderr.WriteString("RPC problem" + e.Error())
 		return
 	}
 
-	_ = console.WriteLine("Result:%d", result)
+	_ = console.WriteLine("Result:%v", result.Passwords)
 }
 
 func Run() {
@@ -38,13 +39,14 @@ func Run() {
 	}(client)
 
 	for {
-		minVal := console.ReadInt("Input origin:", "Invalid value!...")
-		boundVal := console.ReadInt("Input bound:", "Invalid value!...")
+		origin := console.ReadInt("Input origin:", "Invalid value!...")
+		bound := console.ReadInt("Input bound:", "Invalid value!...")
+		count := console.ReadInt("Input count:", "Invalid value!...")
 
-		if minVal == 0 && boundVal == 0 {
+		if origin == 0 && bound == 0 && count <= 0 {
 			break
 		}
-		info := &shared.RandomNumberInfo[int]{Min: minVal, Bound: boundVal}
+		info := &shared.PasswordInfo{Range: shared.RandomRange{Origin: origin, Bound: bound}, Count: count}
 		callGenerate(client, info)
 	}
 }

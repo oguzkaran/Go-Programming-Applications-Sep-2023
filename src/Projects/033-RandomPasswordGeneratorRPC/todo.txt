@@ -1,6 +1,0 @@
-type PasswordInfo struct {
-	Origin, Bound, Count int
-}
-
-yapısı ve RPC kullanılarak Count elemanlı, [Origin, Bound) aralığında rassal üretilmiş bir sayı kadar rassal karakterlerden
-oluşan bir []string slice'ı veren server ve client programları yazınız

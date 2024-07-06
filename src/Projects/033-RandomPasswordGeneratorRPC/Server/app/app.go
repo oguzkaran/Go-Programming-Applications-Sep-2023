@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-func registerGenerator(gen *impl.RandomNumberGenerator) {
+func registerGenerator(gen *impl.RandomPasswordGenerator) {
 	if e := rpc.Register(gen); e != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "registerGenerator: %s\n", e.Error())
 		os.Exit(1)
@@ -39,7 +39,7 @@ func getTCPListener(addr *net.TCPAddr) *net.TCPListener {
 
 func Run() {
 	console.CheckLengthEquals(2, len(os.Args), "usage: ./rpc_server <port number>")
-	gen := new(impl.RandomNumberGenerator)
+	gen := new(impl.RandomPasswordGenerator)
 	registerGenerator(gen)
 	tcp := getTCPAddr()
 	listener := getTCPListener(tcp)
