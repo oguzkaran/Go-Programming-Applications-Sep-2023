@@ -1,56 +1,27 @@
 /*
 ------------------------------------------------------------------------------------------------------------------------
-    Homework-002-1.sorunun bir çözümü
-    (Not: Çözüm çalışma sorusunun verildiği tarihte işlenmiş konulara göre yazılmıştır)
+    Aşağıdaki demo örneği inceleyiniz
 ------------------------------------------------------------------------------------------------------------------------
 */
 
 package main
 
 import (
+	"flag"
 	"fmt"
+	"math/rand/v2"
 )
 
-func printAbove(n int) {
-	for i := 0; i < n; i++ {
-		for k := 0; k < n-i; k++ {
-			fmt.Print(" ")
-		}
-
-		for k := 0; k < 2*i-1; k++ {
-			fmt.Print("*")
-		}
-
-		fmt.Println()
-	}
-}
-
-func printBelow(n int) {
-	for i := 0; i < n; i++ {
-		for k := 0; k < i; k++ {
-			fmt.Print(" ")
-		}
-
-		for k := 0; k < 2*(n-i)-1; k++ {
-			fmt.Print("*")
-		}
-
-		fmt.Println()
-	}
-}
-
-func printDiamond(n int) {
-	printAbove(n)
-	printBelow(n)
-}
-
-func run() {
-	var n int
-	fmt.Print("Input n:")
-	_, _ = fmt.Scanf("%d", &n)
-	printDiamond(n)
-}
-
 func main() {
-	run()
+	count := flag.Int("c", 10, "use as value")
+	origin := flag.Int("o", 0, "use as a value")
+	bound := flag.Int("b", 100, "use as value")
+
+	flag.Parse()
+
+	for i := 0; i < *count; i++ {
+		fmt.Printf("%d ", rand.IntN(*bound-*origin)+*origin)
+	}
+
+	fmt.Println()
 }
