@@ -23,3 +23,26 @@ func (rg *RandomPasswordGenerator) GeneratePasswords(info *shared.PasswordInfo, 
 
 	return nil
 }
+
+func (rg *RandomPasswordGenerator) GeneratePasswordRandomRange(r *shared.RandomRange, result *string) error {
+	origin := r.Origin
+	bound := r.Bound
+
+	if origin >= bound {
+		return errors.New("invalid values for generating password")
+	}
+
+	*result = str.GenerateRandomTextEN(rand.IntN(bound-origin) + origin)
+
+	return nil
+}
+
+func (rg *RandomPasswordGenerator) GeneratePassword(count *int, result *string) error {
+	if *count <= 0 {
+		return errors.New("invalid values for generating password")
+	}
+
+	*result = str.GenerateRandomTextEN(*count)
+
+	return nil
+}

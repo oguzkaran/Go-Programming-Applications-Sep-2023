@@ -2,5 +2,6 @@ package shared
 
 type RandomPasswordGenerator interface {
 	GeneratePasswords(info *PasswordInfo, result *PasswordsInfo) error
-	//GeneratePassword(info *RandomRange, result *string) error
+	GeneratePasswordRandomRange(r *RandomRange, result *string) error
+	GeneratePassword(count *int, result *string) error
 }
