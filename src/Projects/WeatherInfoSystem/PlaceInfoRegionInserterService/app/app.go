@@ -27,21 +27,21 @@ func sendInternalServerError(c *gin.Context, message string) {
 func sendBadRequestError(c *gin.Context, message string) {
 	c.JSON(http.StatusBadRequest, gin.H{
 		"error":  message,
-		"status": "bas request",
+		"status": "bad request",
 	})
 }
 
 func saveRegionServiceCallback(c *gin.Context, pi *jsondata.PlaceInfoRegion) {
 	data, err := json.Marshal(*pi)
 	if err != nil {
-		logger.TraceLog.Println("Internal Server error while marshalling")
+		logger.TraceLog.Println("Error occurred while marshalling")
 		sendInternalServerError(c, "Internal server error")
 		return
 	}
 
 	req, err := http.NewRequest("POST", endPoint, bytes.NewBuffer(data))
 	if err != nil {
-		logger.TraceLog.Println("Internal Server error when post to service")
+		logger.TraceLog.Println("Error occurred while posting to service")
 		sendInternalServerError(c, "Internal server error")
 		return
 	}
@@ -51,7 +51,7 @@ func saveRegionServiceCallback(c *gin.Context, pi *jsondata.PlaceInfoRegion) {
 	client := http.Client{Timeout: 20 * time.Second}
 	res, err := client.Do(req)
 	if err != nil {
-		logger.TraceLog.Println("Internal Server error while making request")
+		logger.TraceLog.Println("Error occurred while making request")
 		sendInternalServerError(c, "Internal server error")
 		return
 	}
