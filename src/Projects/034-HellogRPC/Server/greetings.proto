@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "ali.proto";
+package csd.app.hello;
 
 service GreetingService {
   rpc helloEN(GreetingRequest) returns (GreetingResponse);
@@ -8,12 +8,15 @@ service GreetingService {
 }
 
 message GreetingRequest {
-  string firstName = 1;
-  string lastName = 2;
-  bool married = 3;
+  int32 id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  bool married = 4;
 }
 
 message GreetingResponse {
-  string greeting = 1;
+  string message = 1;
   string maritalStatus = 2;
 }
+
+
