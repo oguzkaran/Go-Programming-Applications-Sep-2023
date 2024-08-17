@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package csd;
 
-
 option go_package = "google.golang.org/grpc/profiling/proto";
 
 service GreetingService {
@@ -18,7 +17,8 @@ message GreetingRequest {
 }
 
 message GreetingResponse {
-  string message = 1;
-  string maritalStatus = 2;
+  int32 id = 1;
+  string message = 2;
+  string maritalStatus = 3;
 }
 
