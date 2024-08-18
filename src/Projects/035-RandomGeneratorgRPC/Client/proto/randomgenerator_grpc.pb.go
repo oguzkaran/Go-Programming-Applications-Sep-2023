@@ -22,6 +22,7 @@ const (
 	RandomTextGeneratorService_GenerateTextEN_FullMethodName  = "/org.csystem.generator.random.RandomTextGeneratorService/GenerateTextEN"
 	RandomTextGeneratorService_GenerateTextTR_FullMethodName  = "/org.csystem.generator.random.RandomTextGeneratorService/GenerateTextTR"
 	RandomTextGeneratorService_GenerateTextsEN_FullMethodName = "/org.csystem.generator.random.RandomTextGeneratorService/GenerateTextsEN"
+	RandomTextGeneratorService_GenerateTextsTR_FullMethodName = "/org.csystem.generator.random.RandomTextGeneratorService/GenerateTextsTR"
 	RandomTextGeneratorService_GetTextBound_FullMethodName    = "/org.csystem.generator.random.RandomTextGeneratorService/GetTextBound"
 	RandomTextGeneratorService_GenerateInt32_FullMethodName   = "/org.csystem.generator.random.RandomTextGeneratorService/GenerateInt32"
 	RandomTextGeneratorService_GenerateDouble_FullMethodName  = "/org.csystem.generator.random.RandomTextGeneratorService/GenerateDouble"
@@ -38,6 +39,7 @@ type RandomTextGeneratorServiceClient interface {
 	GenerateTextEN(ctx context.Context, in *TextGenerateInfo, opts ...grpc.CallOption) (*TextInfo, error)
 	GenerateTextTR(ctx context.Context, in *TextGenerateInfo, opts ...grpc.CallOption) (*TextInfo, error)
 	GenerateTextsEN(ctx context.Context, in *TextsGenerateInfo, opts ...grpc.CallOption) (grpc.ServerStreamingClient[TextInfo], error)
+	GenerateTextsTR(ctx context.Context, in *TextsGenerateInfo, opts ...grpc.CallOption) (grpc.ServerStreamingClient[TextInfo], error)
 	GetTextBound(ctx context.Context, in *NoParam, opts ...grpc.CallOption) (*TextBound, error)
 	GenerateInt32(ctx context.Context, in *Int32GenerateInfo, opts ...grpc.CallOption) (*Int32Result, error)
 	GenerateDouble(ctx context.Context, in *DoubleGenerateInfo, opts ...grpc.CallOption) (*DoubleResult, error)
@@ -94,6 +96,25 @@ func (c *randomTextGeneratorServiceClient) GenerateTextsEN(ctx context.Context, 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type RandomTextGeneratorService_GenerateTextsENClient = grpc.ServerStreamingClient[TextInfo]
 
+func (c *randomTextGeneratorServiceClient) GenerateTextsTR(ctx context.Context, in *TextsGenerateInfo, opts ...grpc.CallOption) (grpc.ServerStreamingClient[TextInfo], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &RandomTextGeneratorService_ServiceDesc.Streams[1], RandomTextGeneratorService_GenerateTextsTR_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[TextsGenerateInfo, TextInfo]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type RandomTextGeneratorService_GenerateTextsTRClient = grpc.ServerStreamingClient[TextInfo]
+
 func (c *randomTextGeneratorServiceClient) GetTextBound(ctx context.Context, in *NoParam, opts ...grpc.CallOption) (*TextBound, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(TextBound)
@@ -136,7 +157,7 @@ func (c *randomTextGeneratorServiceClient) GenerateInt64(ctx context.Context, in
 
 func (c *randomTextGeneratorServiceClient) GenerateInt32S(ctx context.Context, in *Int32SGenerateInfo, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Int32Result], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &RandomTextGeneratorService_ServiceDesc.Streams[1], RandomTextGeneratorService_GenerateInt32S_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &RandomTextGeneratorService_ServiceDesc.Streams[2], RandomTextGeneratorService_GenerateInt32S_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -155,7 +176,7 @@ type RandomTextGeneratorService_GenerateInt32SClient = grpc.ServerStreamingClien
 
 func (c *randomTextGeneratorServiceClient) GenerateDoubles(ctx context.Context, in *DoublesGenerateInfo, opts ...grpc.CallOption) (grpc.ServerStreamingClient[DoubleResult], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &RandomTextGeneratorService_ServiceDesc.Streams[2], RandomTextGeneratorService_GenerateDoubles_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &RandomTextGeneratorService_ServiceDesc.Streams[3], RandomTextGeneratorService_GenerateDoubles_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -174,7 +195,7 @@ type RandomTextGeneratorService_GenerateDoublesClient = grpc.ServerStreamingClie
 
 func (c *randomTextGeneratorServiceClient) GenerateInt64S(ctx context.Context, in *Int64SGenerateInfo, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Int64Result], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &RandomTextGeneratorService_ServiceDesc.Streams[3], RandomTextGeneratorService_GenerateInt64S_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &RandomTextGeneratorService_ServiceDesc.Streams[4], RandomTextGeneratorService_GenerateInt64S_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -198,6 +219,7 @@ type RandomTextGeneratorServiceServer interface {
 	GenerateTextEN(context.Context, *TextGenerateInfo) (*TextInfo, error)
 	GenerateTextTR(context.Context, *TextGenerateInfo) (*TextInfo, error)
 	GenerateTextsEN(*TextsGenerateInfo, grpc.ServerStreamingServer[TextInfo]) error
+	GenerateTextsTR(*TextsGenerateInfo, grpc.ServerStreamingServer[TextInfo]) error
 	GetTextBound(context.Context, *NoParam) (*TextBound, error)
 	GenerateInt32(context.Context, *Int32GenerateInfo) (*Int32Result, error)
 	GenerateDouble(context.Context, *DoubleGenerateInfo) (*DoubleResult, error)
@@ -223,6 +245,9 @@ func (UnimplementedRandomTextGeneratorServiceServer) GenerateTextTR(context.Cont
 }
 func (UnimplementedRandomTextGeneratorServiceServer) GenerateTextsEN(*TextsGenerateInfo, grpc.ServerStreamingServer[TextInfo]) error {
 	return status.Errorf(codes.Unimplemented, "method GenerateTextsEN not implemented")
+}
+func (UnimplementedRandomTextGeneratorServiceServer) GenerateTextsTR(*TextsGenerateInfo, grpc.ServerStreamingServer[TextInfo]) error {
+	return status.Errorf(codes.Unimplemented, "method GenerateTextsTR not implemented")
 }
 func (UnimplementedRandomTextGeneratorServiceServer) GetTextBound(context.Context, *NoParam) (*TextBound, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTextBound not implemented")
@@ -313,6 +338,17 @@ func _RandomTextGeneratorService_GenerateTextsEN_Handler(srv interface{}, stream
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type RandomTextGeneratorService_GenerateTextsENServer = grpc.ServerStreamingServer[TextInfo]
+
+func _RandomTextGeneratorService_GenerateTextsTR_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(TextsGenerateInfo)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(RandomTextGeneratorServiceServer).GenerateTextsTR(m, &grpc.GenericServerStream[TextsGenerateInfo, TextInfo]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type RandomTextGeneratorService_GenerateTextsTRServer = grpc.ServerStreamingServer[TextInfo]
 
 func _RandomTextGeneratorService_GetTextBound_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NoParam)
@@ -455,6 +491,11 @@ var RandomTextGeneratorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "GenerateTextsEN",
 			Handler:       _RandomTextGeneratorService_GenerateTextsEN_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "GenerateTextsTR",
+			Handler:       _RandomTextGeneratorService_GenerateTextsTR_Handler,
 			ServerStreams: true,
 		},
 		{

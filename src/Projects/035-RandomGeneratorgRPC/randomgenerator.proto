@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package org.csystem.generator.random;
+
+option go_package = "google.golang.org/grpc/profiling/proto";
+
+service RandomTextGeneratorService {
+  rpc GenerateTextEN(TextGenerateInfo) returns (TextInfo);
+  rpc GenerateTextTR(TextGenerateInfo) returns (TextInfo);
+  rpc GenerateTextsEN(TextsGenerateInfo) returns (stream TextInfo); //Server side streaming RPC
+  rpc GenerateTextsTR(TextsGenerateInfo) returns (stream TextInfo); //Server side streaming RPC
+  rpc GetTextBound(NoParam) returns (TextBound);
+  rpc GenerateInt32(Int32GenerateInfo) returns (Int32Result);
+  rpc GenerateDouble(DoubleGenerateInfo) returns (DoubleResult);
+  rpc GenerateInt64(Int64GenerateInfo) returns (Int64Result);
+  rpc GenerateInt32s(Int32sGenerateInfo) returns (stream Int32Result);
+  rpc GenerateDoubles(DoublesGenerateInfo) returns (stream DoubleResult);
+  rpc GenerateInt64s(Int64sGenerateInfo) returns (stream Int64Result);
+};
+
+message NoParam {}
+
+message TextBound {
+  sint32 minCount = 1;
+  sint32 maxCount = 2;
+}
+
+message TextGenerateInfo {
+  sint32 count = 1;
+};
+
+message TextsGenerateInfo {
+  sint32 count = 1;
+  sint32 n = 2;
+};
+
+message TextInfo {
+  string text = 1;
+};
+
+message Int32GenerateInfo {
+  sint32 min = 1;
+  sint32 bound = 2;
+}
+message Int32sGenerateInfo {
+  sint32 min = 1;
+  sint32 bound = 2;
+  sint32 count = 3;
+}
+
+message Int32Result {
+  sint32 value = 1;
+}
+
+message DoubleGenerateInfo {
+  double min = 1;
+  double bound = 2;
+}
+
+message DoubleResult {
+  double value = 1;
+}
+
+message DoublesGenerateInfo {
+  double min = 1;
+  double bound = 2;
+  sint32 count = 3;
+}
+
+message Int64GenerateInfo {
+  sint64 min = 1;
+  sint64 bound = 2;
+}
+
+message Int64sGenerateInfo {
+  sint64 min = 1;
+  sint64 bound = 2;
+  sint32 count = 3;
+}
+
+message Int64Result {
+  sint64 value = 1;
+}
+
+
